@@ -2,157 +2,223 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>NEÓN ARCADE | Sistema Central</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEÓN ARCADE | Marketplace 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --pink: #ff00ff; --cyan: #00ffff; --dark: #050111; }
-        body { background: var(--dark); color: white; font-family: 'Orbitron', sans-serif; }
+        body { background: var(--dark); color: white; font-family: 'Orbitron', sans-serif; min-height: 100vh; }
         .cyber-card { background: rgba(10, 5, 30, 0.9); border: 1px solid var(--pink); box-shadow: 0 0 15px rgba(255, 0, 255, 0.2); backdrop-filter: blur(10px); }
-        .btn-cyber { background: linear-gradient(45deg, var(--pink), var(--cyan)); clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); font-weight: bold; transition: 0.3s; }
-        .neon-text { text-shadow: 0 0 10px var(--cyan); }
+        .btn-cyber { background: linear-gradient(45deg, var(--pink), var(--cyan)); clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); font-weight: bold; transition: 0.3s; color: white; }
+        .btn-cyber:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .neon-text { text-shadow: 0 0 10px var(--cyan); color: var(--cyan); }
         .hidden { display: none !important; }
-        input { background: rgba(0,0,0,0.5); border-bottom: 2px solid var(--cyan); padding: 10px; outline: none; color: var(--cyan); width: 100%; margin-bottom: 15px; }
+        input, select { background: rgba(0,0,0,0.5); border-bottom: 2px solid var(--pink); padding: 10px; outline: none; color: var(--cyan); width: 100%; margin-bottom: 15px; }
+        .tab-btn { padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.3s; font-size: 0.8rem; }
+        .tab-btn.active { border-color: var(--cyan); color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
+    <div id="auth-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
         <div class="p-10 cyber-card w-full max-w-md text-center">
-            <h1 class="audiowide text-2xl mb-8 neon-text">SISTEMA DE ACCESO</h1>
+            <h1 class="audiowide text-2xl mb-8 neon-text">NEÓN ARCADE ACCESS</h1>
             <input type="text" id="username" placeholder="OPERADOR_ID">
-            <input type="password" id="password" placeholder="PASSWORD_ENCRIPTADA">
+            <input type="password" id="password" placeholder="PASSWORD_KEY">
             <div class="flex gap-4">
-                <button onclick="login()" class="btn-cyber flex-1 py-3">ENTRAR</button>
-                <button onclick="register()" class="btn-cyber flex-1 py-3" style="background: #111; border: 1px solid var(--pink);">REGISTRAR</button>
+                <button onclick="login()" class="btn-cyber flex-1 py-3">LOGIN</button>
+                <button onclick="register()" class="btn-cyber flex-1 py-3" style="background: #111; border: 1px solid var(--pink);">SIGNUP</button>
             </div>
         </div>
     </div>
 
-    <div id="app" class="hidden min-h-screen">
-        <header class="p-6 border-b border-cyan-900 flex justify-between items-center bg-black/80">
-            <div class="audiowide text-xl neon-text">NEÓN ARCADE</div>
-            <div class="flex items-center gap-4">
-                <span id="user-display" class="text-xs text-pink-500"></span>
-                <button onclick="logout()" class="text-[10px] border border-red-500 px-2 py-1 hover:bg-red-500">SALIR</button>
+    <div id="app" class="hidden flex flex-col min-h-screen">
+        <header class="p-4 border-b border-cyan-900 bg-black/90 sticky top-0 z-50">
+            <div class="flex justify-between items-center mb-4 px-4">
+                <div class="audiowide text-xl neon-text">NEÓN<span style="color:var(--pink)">ARCADE</span></div>
+                <button onclick="logout()" class="text-[10px] text-red-500 border border-red-500 px-2 py-1">TERMINAR_SESIÓN</button>
             </div>
+            <nav class="flex justify-center gap-6 audiowide">
+                <div class="tab-btn active" onclick="switchTab('tab-tienda', this)">COMPRAR</div>
+                <div class="tab-btn" onclick="switchTab('tab-vender', this)">VENDER</div>
+                <div class="tab-btn" onclick="switchTab('tab-perfil', this)">PERFIL</div>
+            </nav>
         </header>
 
-        <main class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="cyber-card p-6 h-fit">
-                <h3 class="audiowide text-sm mb-6 neon-text" id="form-title">NUEVO PRODUCTO</h3>
-                <input type="hidden" id="edit-id">
-                <input type="text" id="prod-name" placeholder="Nombre">
-                <input type="number" id="prod-price" placeholder="Precio">
-                <button onclick="saveProduct()" id="btn-save" class="btn-cyber w-full py-3">AÑADIR A RED</button>
-                <button onclick="cancelEdit()" id="btn-cancel" class="hidden w-full mt-2 text-[10px] text-gray-400 underline">Cancelar Edición</button>
-            </div>
+        <main class="p-6 flex-grow container mx-auto">
+            
+            <section id="tab-tienda" class="tab-content grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="market-grid">
+                    </div>
+                <aside class="cyber-card p-6 h-fit sticky top-32">
+                    <h3 class="audiowide text-sm mb-4 neon-text">CARRITO</h3>
+                    <div id="cart-items" class="text-[10px] space-y-2 mb-4"></div>
+                    <div class="border-t border-pink-500 pt-4 flex justify-between audiowide">
+                        <span>TOTAL:</span>
+                        <span id="cart-total" class="text-pink-500">$0</span>
+                    </div>
+                    <button onclick="checkout()" class="btn-cyber w-full py-3 mt-4 text-xs">PAGAR_CREDITS</button>
+                </aside>
+            </section>
 
-            <div class="lg:col-span-2">
-                <div id="product-list" class="grid grid-cols-1 gap-4"></div>
-            </div>
+            <section id="tab-vender" class="tab-content hidden max-w-2xl mx-auto">
+                <div class="cyber-card p-8">
+                    <h2 class="audiowide mb-6 neon-text text-center">SUBIR MÓDULO A LA RED</h2>
+                    <input type="text" id="prod-name" placeholder="Nombre del Producto">
+                    <input type="number" id="prod-price" placeholder="Precio en Credits">
+                    <select id="prod-cat">
+                        <option value="Software">Software</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Seguridad">Seguridad</option>
+                    </select>
+                    <button onclick="createProduct()" class="btn-cyber w-full py-4 mb-8">PUBLICAR_MÓDULO</button>
+
+                    <h3 class="audiowide text-sm mb-4 text-pink-500">TUS PUBLICACIONES (EDITAR/BORRAR)</h3>
+                    <div id="my-products" class="space-y-3"></div>
+                </div>
+            </section>
+
+            <section id="tab-perfil" class="tab-content hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="cyber-card p-8">
+                        <h2 class="audiowide neon-text mb-4">DATOS DEL OPERADOR</h2>
+                        <p class="mb-2">USUARIO: <span id="prof-user" class="text-pink-500"></span></p>
+                        <p class="mb-2">ESTADO: <span class="text-green-500">ONLINE</span></p>
+                        <p>ID_CONEXIÓN: <span class="text-xs text-gray-500" id="prof-id"></span></p>
+                    </div>
+                    <div class="cyber-card p-8">
+                        <h2 class="audiowide neon-text mb-4">NOTIFICACIONES</h2>
+                        <div class="text-[10px] text-gray-400 space-y-2">
+                            <p>[OK] Sistema encriptado activado.</p>
+                            <p>[OK] Mercado global sincronizado.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
     <script>
-        // --- USUARIOS ---
-        function login() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
-            if(users[u] && users[u] === p) {
-                localStorage.setItem('currentUser', u);
-                checkSession();
-            } else { alert("Error de acceso"); }
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
         }
 
+        // --- AUTH ---
         function register() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
-            if(!u || !p) return alert("Completa los campos");
-            const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+            if(!u || !p) return alert("Error en datos");
+            const users = JSON.parse(localStorage.getItem('arcade_users') || '{}');
             users[u] = p;
-            localStorage.setItem('usuarios', JSON.stringify(users));
-            alert("Usuario registrado. Ahora puedes entrar.");
+            localStorage.setItem('arcade_users', JSON.stringify(users));
+            alert("Registro exitoso.");
         }
 
-        function logout() { localStorage.removeItem('currentUser'); location.reload(); }
+        function login() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const users = JSON.parse(localStorage.getItem('arcade_users') || '{}');
+            if(users[u] === p) {
+                localStorage.setItem('arcade_session', u);
+                init();
+            } else { alert("Acceso denegado"); }
+        }
 
-        // --- CRUD DE PRODUCTOS ---
-        function saveProduct() {
-            const id = document.getElementById('edit-id').value;
+        function logout() { localStorage.removeItem('arcade_session'); location.reload(); }
+
+        // --- CRUD PRODUCTOS ---
+        let cart = [];
+
+        function createProduct() {
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
+            const cat = document.getElementById('prod-cat').value;
+            const owner = localStorage.getItem('arcade_session');
             if(!name || !price) return;
 
-            let prods = JSON.parse(localStorage.getItem('global_prods') || '[]');
-            
-            if(id) { // UPDATE
-                prods = prods.map(p => p.id == id ? {id, name, price} : p);
-                cancelEdit();
-            } else { // CREATE
-                prods.push({ id: Date.now(), name, price });
-            }
-            
-            localStorage.setItem('global_prods', JSON.stringify(prods));
+            const prods = JSON.parse(localStorage.getItem('arcade_prods') || '[]');
+            prods.push({ id: Date.now(), name, price, cat, owner });
+            localStorage.setItem('arcade_prods', JSON.stringify(prods));
             render();
-            document.getElementById('prod-name').value = '';
-            document.getElementById('prod-price').value = '';
+            alert("Módulo subido!");
+        }
+
+        function deleteProduct(id) {
+            let prods = JSON.parse(localStorage.getItem('arcade_prods') || '[]');
+            prods = prods.filter(p => p.id != id);
+            localStorage.setItem('arcade_prods', JSON.stringify(prods));
+            render();
         }
 
         function render() {
-            const list = document.getElementById('product-list');
-            const prods = JSON.parse(localStorage.getItem('global_prods') || '[]');
-            list.innerHTML = prods.map(p => `
-                <div class="cyber-card p-4 flex justify-between items-center border-cyan-800">
+            const prods = JSON.parse(localStorage.getItem('arcade_prods') || '[]');
+            const currentUser = localStorage.getItem('arcade_session');
+
+            // Render Tienda
+            const market = document.getElementById('market-grid');
+            market.innerHTML = prods.map(p => `
+                <div class="cyber-card p-6 flex flex-col justify-between">
                     <div>
-                        <p class="neon-text font-bold">${p.name}</p>
-                        <p class="text-xs text-pink-400">$${p.price}</p>
+                        <span class="text-[8px] bg-pink-600 px-2 py-1 rounded">${p.cat}</span>
+                        <h4 class="audiowide mt-4 neon-text">${p.name}</h4>
+                        <p class="text-[10px] text-gray-500 mb-4">Vendedor: ${p.owner}</p>
                     </div>
-                    <div class="flex gap-4">
-                        <button onclick="startEdit(${p.id}, '${p.name}', ${p.price})" class="text-[10px] text-cyan-400 hover:underline">EDITAR</button>
-                        <button onclick="deleteProd(${p.id})" class="text-[10px] text-red-500 hover:underline">BORRAR</button>
+                    <div class="flex justify-between items-center">
+                        <span class="text-pink-500 font-bold">$${p.price}</span>
+                        <button onclick="addToCart('${p.name}', ${p.price})" class="btn-cyber px-4 py-2 text-[10px]">COMPRAR</button>
                     </div>
+                </div>
+            `).join('');
+
+            // Render Mis Productos (Vender)
+            const myProds = document.getElementById('my-products');
+            myProds.innerHTML = prods.filter(p => p.owner === currentUser).map(p => `
+                <div class="flex justify-between items-center p-3 border border-gray-800 bg-black/40">
+                    <span class="text-xs">${p.name} ($${p.price})</span>
+                    <button onclick="deleteProduct(${p.id})" class="text-red-500 text-[10px] hover:underline">ELIMINAR</button>
                 </div>
             `).join('');
         }
 
-        function deleteProd(id) {
-            let prods = JSON.parse(localStorage.getItem('global_prods') || '[]');
-            prods = prods.filter(p => p.id != id);
-            localStorage.setItem('global_prods', JSON.stringify(prods));
-            render();
+        // --- CARRITO ---
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCartUI();
         }
 
-        function startEdit(id, name, price) {
-            document.getElementById('edit-id').value = id;
-            document.getElementById('prod-name').value = name;
-            document.getElementById('prod-price').value = price;
-            document.getElementById('form-title').innerText = "EDITAR MÓDULO";
-            document.getElementById('btn-save').innerText = "ACTUALIZAR DATOS";
-            document.getElementById('btn-cancel').classList.remove('hidden');
+        function updateCartUI() {
+            const list = document.getElementById('cart-items');
+            list.innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
+            const total = cart.reduce((s, i) => s + i.price, 0);
+            document.getElementById('cart-total').innerText = `$${total}`;
         }
 
-        function cancelEdit() {
-            document.getElementById('edit-id').value = '';
-            document.getElementById('prod-name').value = '';
-            document.getElementById('prod-price').value = '';
-            document.getElementById('form-title').innerText = "NUEVO PRODUCTO";
-            document.getElementById('btn-save').innerText = "AÑADIR A RED";
-            document.getElementById('btn-cancel').classList.add('hidden');
+        function checkout() {
+            if(cart.length === 0) return alert("CARRITO VACÍO");
+            alert("TRANSACCIÓN EXITOSA.");
+            cart = [];
+            updateCartUI();
         }
 
-        function checkSession() {
-            const user = localStorage.getItem('currentUser');
+        // --- INIT ---
+        function init() {
+            const user = localStorage.getItem('arcade_session');
             if(user) {
-                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
-                document.getElementById('user-display').innerText = `OPERADOR: ${user}`;
+                document.getElementById('prof-user').innerText = user;
+                document.getElementById('prof-id').innerText = "NODE-" + Math.random().toString(36).substring(7).toUpperCase();
                 render();
             }
         }
 
-        checkSession();
+        init();
     </script>
 </body>
 </html>
