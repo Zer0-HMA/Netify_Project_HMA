@@ -3,227 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEON ARCADE | Future Tech Hub</title>
+    <title>NEÓN ARCADE | Seguridad Digital</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Syncopate:wght@400;700&family=Exo+2:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --synth-pink: #ff00ff;
-            --synth-cyan: #00ffff;
-            --synth-purple: #3a006f;
-            --dark-bg: #050111;
-            --grid-color: rgba(255, 0, 255, 0.1);
+            --pink: #ff00ff;
+            --cyan: #00ffff;
+            --dark: #050111;
         }
 
         body {
-            background-color: var(--dark-bg);
+            background-color: var(--dark);
             color: white;
-            font-family: 'Exo 2', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             overflow-x: hidden;
             background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            /* Degradado de fondo retro */
-            background-attachment: fixed;
+                linear-gradient(rgba(255, 0, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        .audiowide { font-family: 'Audiowide', cursive; }
-        .syncopate { font-family: 'Syncopate', sans-serif; }
+        .neon-text { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan); }
+        .neon-pink { text-shadow: 0 0 10px var(--pink), 0 0 20px var(--pink); }
 
-        /* --- EFECTOS RETROWAVE --- */
-        .neon-text-pink {
-            color: var(--synth-pink);
-            text-shadow: 0 0 5px var(--synth-pink), 0 0 10px var(--synth-pink);
-        }
-        .neon-text-cyan {
-            color: var(--synth-cyan);
-            text-shadow: 0 0 5px var(--synth-cyan), 0 0 10px var(--synth-cyan);
-        }
-
-        .neon-border-pink {
-            border: 2px solid var(--synth-pink);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5), inset 0 0 15px rgba(255, 0, 255, 0.3);
-        }
-        .neon-border-cyan {
-            border: 2px solid var(--synth-cyan);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(0, 255, 255, 0.3);
-        }
-
-        /* --- ANIMACIONES --- */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes scanline {
-            0% { bottom: 100%; }
-            100% { bottom: 0%; }
-        }
-
-        /* Línea de escaneo animada */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 2px;
-            background: rgba(255, 0, 255, 0.2);
-            opacity: 0.5;
-            animation: scanline 6s linear infinite;
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        .card-float {
+        .cyber-card {
+            background: rgba(10, 5, 30, 0.8);
+            border: 1px solid var(--pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
-        .card-float:hover {
-            animation: float 2s ease-in-out infinite;
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
-            border-color: var(--synth-cyan);
+
+        .cyber-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+            border-color: var(--cyan);
         }
 
-        /* Botón estilo Arcade */
-        .btn-arcade {
-            background: linear-gradient(180deg, var(--synth-pink) 0%, #a000a0 100%);
+        /* Botón estilo Retro-Futurista */
+        .btn-glitch {
+            background: linear-gradient(45deg, var(--pink), var(--cyan));
             border: none;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
+            position: relative;
+            overflow: hidden;
             transition: 0.2s;
-            text-shadow: 0 2px 2px rgba(0,0,0,0.5);
-            box-shadow: 0 5px 0 #5e005e, 0 8px 15px rgba(255,0,255,0.3);
+            font-weight: bold;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
         }
 
-        .btn-arcade:hover {
-            background: linear-gradient(180deg, #ff40ff 0%, var(--synth-pink) 100%);
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #5e005e, 0 5px 10px rgba(255,0,255,0.3);
-        }
-
-        .btn-arcade:active {
-            transform: translateY(5px);
-            box-shadow: none;
+        .btn-glitch:hover {
+            filter: brightness(1.2);
+            transform: scale(1.05);
         }
 
         .hidden { display: none !important; }
 
-        /* Scrollbar Vaporwave */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--dark-bg); }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--synth-pink), var(--synth-cyan)); border-radius: 10px; }
+        /* Animación de escaneo */
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .scanner {
+            position: fixed; top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0, 255, 255, 0.2);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+    <div class="scanner"></div>
 
-    <div id="login-screen" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#050111]">
-        <div class="absolute inset-0 opacity-20" style="background: linear-gradient(180deg, #3a006f 0%, #050111 100%);"></div>
-        
-        <div class="p-10 neon-border-cyan bg-black/80 max-w-lg w-full text-center relative card-float">
-            <h1 class="syncopate text-4xl mb-3 neon-text-pink font-bold">SYSTEM ACCESS</h1>
-            <p class="audiowide text-xs tracking-[0.4em] mb-10 text-cyan-200">RETROWAVE SECURITY PROTOCOL v1.98</p>
-            <div class="space-y-5">
-                <input type="text" id="user" placeholder="SYS_OPERATOR" class="w-full bg-transparent border-b-2 border-pink-900 p-3 outline-none focus:border-cyan-400 text-cyan-300 audiowide text-center">
-                <input type="password" id="pass" placeholder="ACCESS_KEY" class="w-full bg-transparent border-b-2 border-pink-900 p-3 outline-none focus:border-cyan-400 text-cyan-300 audiowide text-center">
-                <button onclick="handleLogin()" class="btn-arcade w-full py-4 syncopate text-lg">BOOT SEQUENCE</button>
+    <div id="login-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
+        <div class="p-10 cyber-card rounded-none border-t-4 border-b-4 w-full max-w-md text-center">
+            <h1 class="audiowide text-3xl mb-2 neon-text tracking-widest">ACCESO AL NODO</h1>
+            <p class="text-[10px] text-pink-500 mb-8 tracking-[0.5em]">SISTEMA DE SEGURIDAD ENCRIPTADO</p>
+            
+            <div class="space-y-6">
+                <div class="relative">
+                    <input type="text" id="user" placeholder="OPERADOR_ID" class="w-full bg-black/50 border-l-4 border-cyan-500 p-3 outline-none text-cyan-400 placeholder-cyan-900">
+                </div>
+                <div class="relative">
+                    <input type="password" id="pass" placeholder="CLAVE_ACCESO" class="w-full bg-black/50 border-l-4 border-pink-500 p-3 outline-none text-pink-400 placeholder-pink-900">
+                </div>
+                <button onclick="handleLogin()" class="btn-glitch w-full py-4 text-sm tracking-widest">INICIAR_BOOT</button>
             </div>
-            <p class="mt-5 text-[10px] text-gray-700 italic">Credentials: admin / 123</p>
+            <p class="mt-6 text-[9px] text-gray-600">admin / 123</p>
         </div>
     </div>
 
     <div id="app" class="hidden min-h-screen flex flex-col">
-        <header class="border-b-2 border-pink-900 p-5 flex justify-between items-center bg-black/60 backdrop-blur-md sticky top-0 z-50">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl neon-text-pink">🕹️</span>
-                <span class="syncopate font-black text-2xl tracking-tighter neon-text-cyan">NEON<span class="neon-text-pink">ARCADE</span></span>
-            </div>
-            <div class="flex items-center gap-8">
-                <span id="op-status" class="audiowide text-xs neon-text-pink">LINK_STATUS: <span class="neon-text-cyan">ACTIVE</span></span>
-                <button onclick="handleLogout()" class="audiowide text-xs hover:text-red-400 transition">LOGOUT</button>
+        <header class="p-6 border-b border-cyan-900 bg-black/80 flex justify-between items-center">
+            <div class="audiowide text-2xl neon-text">NEÓN<span class="neon-pink">ARCADE</span></div>
+            <div class="flex items-center gap-6">
+                <span class="text-[10px] text-cyan-500 audiowide animate-pulse">ESTADO: CONECTADO</span>
+                <button onclick="handleLogout()" class="text-[10px] border border-red-500 px-2 py-1 hover:bg-red-500 transition">DESCONECTAR</button>
             </div>
         </header>
 
-        <section class="relative h-[45vh] overflow-hidden flex items-center justify-center border-b-2 border-pink-900">
-            <div class="absolute inset-0 opacity-30 pointer-events-none" style="background: radial-gradient(circle at center, #8a2be2 0%, #050111 70%);"></div>
-            <div class="text-center z-10 px-6">
-                <p class="audiowide text-xs tracking-[0.6em] text-cyan-300 mb-3 animate-pulse">BIENVENIDO A LA ARCOLOGÍA DIGITAL</p>
-                <h2 class="syncopate text-7xl font-black mb-6 neon-text-pink">THE ARCADE</h2>
-                <div class="flex gap-5 justify-center">
-                    <button class="btn-arcade px-10 py-3 text-sm syncopate">VER_MÓDULOS</button>
-                    <button class="btn-arcade px-10 py-3 text-sm syncopate" style="background: linear-gradient(180deg, var(--synth-cyan) 0%, #00a0a0 100%); box-shadow: 0 5px 0 #005e5e;">SUBIR_MODS</button>
-                </div>
-            </div>
-        </section>
-
-        <main class="flex-grow p-8 grid grid-cols-1 xl:grid-cols-4 gap-10">
+        <main class="p-8 grid grid-cols-1 xl:grid-cols-4 gap-8">
             <div class="xl:col-span-3">
-                <h3 class="audiowide text-lg mb-8 flex items-center gap-3 neon-text-cyan">
-                    <span class="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></span> CATÁLOGO_RETROFUTURISTA
-                </h3>
-                <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-8">
+                <h2 class="audiowide text-lg mb-8 neon-text underline decoration-pink-500">MÓDULOS_DISPONIBLES</h2>
+                <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                     </div>
             </div>
 
-            <aside class="relative">
-                <div class="sticky top-28 neon-border-cyan p-8 bg-purple-950/20 backdrop-blur-lg rounded-xl">
-                    <h3 class="syncopate text-md mb-8 text-center border-b-2 border-pink-900 pb-3 neon-text-pink">QUEUE_DESPLIEGUE</h3>
-                    <div id="items-carrito" class="space-y-5 mb-8 max-h-[45vh] overflow-y-auto pr-3">
+            <aside class="space-y-6">
+                <div class="cyber-card p-6 sticky top-24">
+                    <h3 class="audiowide text-sm mb-6 border-b border-pink-500 pb-2">COLA_DE_DESPLIEGUE</h3>
+                    <div id="items-carrito" class="space-y-4 mb-6 max-h-[40vh] overflow-y-auto">
                         </div>
-                    <div class="border-t-2 border-pink-900 pt-6 space-y-3">
-                        <div class="flex justify-between text-xs audiowide">
-                            <span>TOTAL_CREDITS</span>
-                            <span id="total-precio" class="neon-text-cyan text-lg font-bold">$0</span>
+                    <div class="border-t border-cyan-900 pt-4">
+                        <div class="flex justify-between audiowide text-sm">
+                            <span>TOTAL:</span>
+                            <span id="total-precio" class="neon-text">$0</span>
                         </div>
-                        <div class="flex justify-between text-[10px] text-gray-500 uppercase">
-                            <span>Digital_Tax</span>
-                            <span>3.14%</span>
-                        </div>
-                        <button onclick="finalizarCompra()" class="btn-arcade w-full py-5 mt-6 syncopate text-lg">PROCESAR_COMPRA</button>
+                        <button onclick="finalizarCompra()" class="btn-glitch w-full py-3 mt-6 text-xs">EJECUTAR_CONTRATO</button>
                     </div>
                 </div>
             </aside>
         </main>
-
-        <footer class="border-t-2 border-pink-900 p-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center bg-black/30">
-            <div><p class="text-3xl audiowide neon-text-cyan">15</p><p class="text-[10px] text-gray-600">MÓDULOS_DB</p></div>
-            <div><p class="text-3xl audiowide neon-text-cyan">5</p><p class="text-[10px] text-gray-600">NODOS_RED</p></div>
-            <div><p class="text-3xl audiowide neon-text-pink">0</p><p class="text-[10px] text-gray-600">BRECHAS_SEG</p></div>
-            <div><p class="text-3xl audiowide neon-text-pink">98%</p><p class="text-[10px] text-gray-600">OPTIMIZADO</p></div>
-        </footer>
     </div>
 
     <script>
+        // PRODUCTOS EN ESPAÑOL
         const productos = [
-            { id: 1, name: "Neural-Synth Core", price: 25000, img: "🧠", desc: "Interfaz auditiva vaporwave directa." },
-            { id: 2, name: "Neon Rider Console", price: 18800, img: "⌨️", desc: "Teclado mecánico holográfico." },
-            { id: 3, name: "Arcade-ICE Breaker", price: 7600, img: "👾", desc: "Bypass de seguridad SmartGrid retro." },
-            { id: 4, name: "Vapor-Cure Bots", price: 4300, img: "🧴", desc: "Reparación estética nanotecnológica." },
-            { id: 5, name: "Croma-Vault Chip", price: 11900, img: "💿", desc: "Almacenamiento de data de alta fidelidad." },
-            { id: 6, name: "Synth-Drone v4", price: 28000, img: "🚁", desc: "Vigilancia estética aérea." }
+            { id: 1, name: "Núcleo IA Sentinel", price: 25000, img: "", desc: "IA de defensa autónoma v4.2" },
+            { id: 2, name: "Firewall Cuántico", price: 18800, img: "", desc: "Bloqueo perimetral grado militar" },
+            { id: 3, name: "Escáner de Intrusos", price: 7600, img: "", desc: "Detección de malware en tiempo real" },
+            { id: 4, name: "Nodo de Red Privada", price: 4300, img: "", desc: "Encriptación de punto a punto" },
+            { id: 5, name: "Inyector de Código", price: 11900, img: "", desc: "Módulo de recuperación de datos" },
+            { id: 6, name: "Sonda Stealth v8", price: 34000, img: "", desc: "Vigilancia de red invisible" }
         ];
 
-        let carrito = JSON.parse(localStorage.getItem('arcade_cart')) || [];
+        let carrito = JSON.parse(localStorage.getItem('user_cart')) || [];
 
         function handleLogin() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
             if(u === 'admin' && p === '123') {
-                localStorage.setItem('arcade_auth', 'true');
+                localStorage.setItem('auth_status', 'active');
                 init();
-            } else {
-                alert("ACCESS_DENIED: Credenciales inválidas.");
-            }
+            } else { alert("ACCESO DENEGADO"); }
         }
 
         function handleLogout() {
-            localStorage.removeItem('arcade_auth');
+            localStorage.removeItem('auth_status');
             location.reload();
         }
 
         function init() {
-            if(localStorage.getItem('arcade_auth')) {
+            if(localStorage.getItem('auth_status')) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
                 render();
@@ -233,15 +165,15 @@
         function render() {
             const grid = document.getElementById('lista-productos');
             grid.innerHTML = productos.map(p => `
-                <div class="neon-border-pink p-8 bg-black/60 card-float rounded-lg border-opacity-50 hover:border-opacity-100 flex flex-col justify-between">
+                <div class="cyber-card p-6 flex flex-col justify-between">
                     <div>
-                        <div class="text-6xl mb-6 neon-text-cyan flex justify-center">${p.img}</div>
-                        <h4 class="syncopate text-xl neon-text-cyan mb-2">${p.name}</h4>
-                        <p class="text-xs text-gray-400 mb-6 h-10">${p.desc}</p>
+                        <div class="text-5xl mb-4">${p.img}</div>
+                        <h4 class="audiowide text-sm neon-text mb-2">${p.name}</h4>
+                        <p class="text-[10px] text-gray-400 mb-6">${p.desc}</p>
                     </div>
-                    <div class="flex justify-between items-center border-t border-pink-900 pt-4">
-                        <span class="audiowide font-bold text-lg neon-text-pink">$${p.price.toLocaleString()}</span>
-                        <button onclick="addToCart(${p.id})" class="btn-arcade px-6 py-2 text-xs syncopate">AÑADIR</button>
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-pink-500">$${p.price.toLocaleString()}</span>
+                        <button onclick="addToCart(${p.id})" class="btn-glitch px-4 py-2 text-[10px]">ADQUIRIR</button>
                     </div>
                 </div>
             `).join('');
@@ -251,7 +183,7 @@
         function addToCart(id) {
             const p = productos.find(x => x.id === id);
             carrito.push(p);
-            localStorage.setItem('arcade_cart', JSON.stringify(carrito));
+            localStorage.setItem('user_cart', JSON.stringify(carrito));
             updateCart();
         }
 
@@ -260,12 +192,9 @@
             const totalDisplay = document.getElementById('total-precio');
             
             list.innerHTML = carrito.map((item, idx) => `
-                <div class="flex justify-between text-xs border-r-2 border-cyan-500 pr-3 py-2 bg-cyan-950/10 rounded">
-                    <div>
-                        <p class="font-bold text-cyan-100">${item.name}</p>
-                        <p class="text-[9px] text-pink-600">ID_MOD_${idx + 100}</p>
-                    </div>
-                    <span class="audiowide neon-text-pink">$${item.price}</span>
+                <div class="flex justify-between text-[10px] bg-white/5 p-2 border-r-2 border-cyan-500">
+                    <span>${item.name}</span>
+                    <span class="text-pink-400">$${item.price}</span>
                 </div>
             `).join('');
 
@@ -274,10 +203,10 @@
         }
 
         function finalizarCompra() {
-            if(carrito.length === 0) return alert("NO_DATA_TO_PROCESS");
-            alert("TRANSACTION_SUCCESS: Módulos desplegados en la red.");
+            if(carrito.length === 0) return alert("COLA VACÍA");
+            alert("CONTRATO EJECUTADO: Recursos asignados a su IP.");
             carrito = [];
-            localStorage.removeItem('arcade_cart');
+            localStorage.removeItem('user_cart');
             updateCart();
         }
 
