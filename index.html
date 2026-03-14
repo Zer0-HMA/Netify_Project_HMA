@@ -18,74 +18,70 @@
         .glow-border { border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
         .glow-border:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         .hidden { display: none !important; }
-        input, select, textarea { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 10px; color: white; outline: none; border-radius: 8px; }
-        .tab-active { color: var(--neon-cyan); border-bottom: 2px solid var(--neon-cyan); }
+        input { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; color: white; outline: none; border-radius: 8px; width: 100%; }
+        .btn-primary { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.3s; }
+        .btn-primary:hover { filter: brightness(1.2); transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md">
-        <div class="p-10 glow-border bg-[#0a0a0f] max-w-md w-full rounded-2xl text-center">
-            <h1 class="audiowide text-3xl mb-2">FRIKI-<span class="text-cyan-400">VAULT</span></h1>
-            <p class="text-[10px] text-gray-500 mb-8 tracking-[0.4em]">SYSTEM_ACCESS_V3.0</p>
-            <div class="space-y-4">
-                <input type="text" id="user-id" placeholder="OPERADOR_ID (ej: admin)" class="w-full">
-                <input type="password" id="user-pass" placeholder="ACCESS_KEY (ej: 123)" class="w-full">
-                <button onclick="handleLogin()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-lg font-bold uppercase tracking-widest hover:brightness-125 transition">INICIAR SECUENCIA</button>
+    <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95">
+        <div class="p-10 glow-border bg-[#0a0a0f] max-w-md w-full rounded-2xl">
+            <div id="login-box">
+                <h1 class="audiowide text-3xl mb-2 text-center">SYSTEM <span class="text-cyan-400">ACCESS</span></h1>
+                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">RETROWAVE_SECURITY_PROTOCOL</p>
+                <div class="space-y-4">
+                    <input type="text" id="login-user" placeholder="SYS_OPERATOR">
+                    <input type="password" id="login-pass" placeholder="ACCESS_KEY">
+                    <button onclick="login()" class="btn-primary w-full uppercase">Boot Sequence</button>
+                    <p class="text-center text-xs mt-4">¿No tienes acceso? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:underline">Crear Cuenta</a></p>
+                </div>
             </div>
-            <p class="mt-4 text-[10px] text-gray-600 italic">Credenciales por defecto: admin / 123</p>
+            <div id="register-box" class="hidden">
+                <h1 class="audiowide text-3xl mb-2 text-center text-purple-500">NEW <span class="text-white">OPERATOR</span></h1>
+                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">ENROLL_SYSTEM_DATABASE</p>
+                <div class="space-y-4">
+                    <input type="text" id="reg-user" placeholder="CHOOSE_OPERATOR_ID">
+                    <input type="password" id="reg-pass" placeholder="SET_ACCESS_KEY">
+                    <button onclick="register()" class="btn-primary w-full uppercase" style="background: var(--neon-purple)">Register ID</button>
+                    <p class="text-center text-xs mt-4">¿Ya tienes cuenta? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:underline">Ir al Login</a></p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="app" class="hidden min-h-screen flex flex-col">
         <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10 p-4">
-            <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="container mx-auto flex justify-between items-center">
                 <div class="audiowide text-2xl text-cyan-400">FV-ULTRA</div>
-                <div class="relative flex-grow max-w-md">
-                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
-                    <input type="text" id="search-bar" onkeyup="filtrarTodo()" placeholder="Buscar entre 50+ artículos..." class="w-full pl-10 py-2 rounded-full text-sm">
+                <div class="relative flex-grow max-w-md mx-4">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-400 w-4 h-4"></i>
+                    <input type="text" id="search-bar" onkeyup="filtrarTodo()" placeholder="Buscar entre 50+ artículos..." class="pl-10 py-2 rounded-full text-sm">
                 </div>
-                <nav class="flex gap-6 items-center">
-                    <button id="btn-tienda" onclick="switchTab('tienda')" class="text-xs font-bold tab-active">TIENDA</button>
-                    <button id="btn-vender" onclick="switchTab('vender')" class="text-xs font-bold">VENDER</button>
-                    <button onclick="logout()" class="text-red-500"><i data-lucide="log-out" class="w-5"></i></button>
-                </nav>
+                <button onclick="logout()" class="text-red-500"><i data-lucide="log-out"></i></button>
             </div>
         </header>
 
         <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
             <aside class="space-y-6">
                 <div class="p-6 glow-border bg-white/5 rounded-2xl">
-                    <h3 class="audiowide text-xs mb-4 text-cyan-400 uppercase">Filtros</h3>
+                    <h3 class="audiowide text-xs mb-4 text-cyan-400">CATEGORÍAS</h3>
                     <div class="space-y-3" id="filter-container">
-                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="PC Gamer" checked onchange="filtrarTodo()" class="accent-cyan-400"> Hardware / PC</label>
-                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Ropa Friki" checked onchange="filtrarTodo()" class="accent-cyan-400"> Ropa Geek</label>
-                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" value="Juegos" checked onchange="filtrarTodo()" class="accent-cyan-400"> Videojuegos</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" value="PC Gamer" checked onchange="filtrarTodo()" class="accent-cyan-400"> Hardware / PC</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" value="Ropa Friki" checked onchange="filtrarTodo()" class="accent-cyan-400"> Ropa Geek</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" value="Juegos" checked onchange="filtrarTodo()" class="accent-cyan-400"> Videojuegos</label>
                     </div>
                 </div>
                 <div class="p-6 glow-border bg-cyan-900/10 rounded-2xl">
-                    <h3 class="audiowide text-xs mb-4">CARRITO DE RED</h3>
-                    <div id="cart-list" class="text-[10px] space-y-2 mb-4 max-h-40 overflow-y-auto"></div>
-                    <div class="flex justify-between font-bold text-cyan-400"><span>TOTAL:</span><span id="cart-total">$0</span></div>
-                    <button class="w-full py-3 mt-4 bg-cyan-500 text-black font-bold rounded text-xs">PAGAR EN MXN</button>
+                    <h3 class="audiowide text-xs mb-2 italic">CARRITO DE RED</h3>
+                    <div id="cart-list" class="text-[10px] space-y-1 mb-4"></div>
+                    <div class="flex justify-between font-bold text-cyan-400 border-t border-white/10 pt-2">
+                        <span>TOTAL:</span><span id="cart-total">$0 MXN</span>
+                    </div>
                 </div>
             </aside>
 
-            <div class="lg:col-span-3">
-                <div id="tab-tienda" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
-                <section id="tab-vender" class="hidden max-w-xl mx-auto p-8 glow-border bg-white/5 rounded-2xl">
-                    <h2 class="audiowide text-xl mb-6 text-center">SUBIR MÓDULO</h2>
-                    <input type="text" id="n-name" placeholder="Nombre" class="w-full mb-4">
-                    <input type="number" id="n-price" placeholder="Precio MXN" class="w-full mb-4">
-                    <select id="n-cat" class="w-full mb-4">
-                        <option value="PC Gamer">PC Gamer</option>
-                        <option value="Ropa Friki">Ropa Friki</option>
-                        <option value="Juegos">Juegos</option>
-                    </select>
-                    <input type="file" id="n-file" class="mb-4 text-xs" onchange="handleFile(this)">
-                    <button onclick="saveProduct()" class="w-full py-4 bg-purple-600 rounded-xl font-bold">PUBLICAR</button>
-                </section>
-            </div>
+            <div id="tab-tienda" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
         </main>
     </div>
 
@@ -93,49 +89,82 @@
         lucide.createIcons();
         let allProducts = [];
         let cart = [];
-        let tempImg = "";
 
-        // --- LOGIN LOGIC ---
-        function handleLogin() {
-            const user = document.getElementById('user-id').value;
-            const pass = document.getElementById('user-pass').value;
-            if(user === "admin" && pass === "123") {
-                document.getElementById('login-screen').classList.add('hidden');
+        // --- SISTEMA DE AUTH (LOCALSTORAGE) ---
+        function toggleAuth() {
+            document.getElementById('login-box').classList.toggle('hidden');
+            document.getElementById('register-box').classList.toggle('hidden');
+        }
+
+        function register() {
+            const u = document.getElementById('reg-user').value;
+            const p = document.getElementById('reg-pass').value;
+            if(!u || !p) return alert("Completa los campos");
+            
+            let users = JSON.parse(localStorage.getItem('fv_users') || '{}');
+            if(users[u]) return alert("El usuario ya existe");
+            
+            users[u] = p;
+            localStorage.setItem('fv_users', JSON.stringify(users));
+            alert("¡Registro exitoso! Ya puedes iniciar sesión.");
+            toggleAuth();
+        }
+
+        function login() {
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            let users = JSON.parse(localStorage.getItem('fv_users') || '{"admin":"123"}');
+            
+            if(users[u] === p) {
+                document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
-                generate50Items();
-            } else { alert("ACCESO DENEGADO"); }
+                initStore();
+            } else { alert("Credenciales incorrectas"); }
         }
 
         function logout() { location.reload(); }
 
-        // --- DATA GENERATOR (Precios reales MXN e imágenes reales) ---
-        function generate50Items() {
-            const hardware = [
-                {n: "Gabinete ROG Strix", p: 4500, img: "http://googleusercontent.com/image_collection/image_retrieval/12572409926942757025_0"},
-                {n: "RTX 4060 Ti", p: 8900, img: "http://googleusercontent.com/image_collection/image_retrieval/12572409926942757025_4"},
-                {n: "Teclado Mecánico RGB", p: 1200, img: "http://googleusercontent.com/image_collection/image_retrieval/12572409926942757025_2"}
-            ];
-            const ropa = [
-                {n: "Sudadera Akatsuki", p: 750, img: "http://googleusercontent.com/image_collection/image_retrieval/10257394419728664371_0"},
-                {n: "Hoodie Ninja Leaf", p: 600, img: "http://googleusercontent.com/image_collection/image_retrieval/10257394419728664371_3"}
-            ];
-            const juegos = [
-                {n: "Zelda: Tears of Kingdom", p: 1300, img: "http://googleusercontent.com/image_collection/image_retrieval/6703554500438142354_0"},
-                {n: "Elden Ring PS5", p: 1100, img: "http://googleusercontent.com/image_collection/image_retrieval/6703554500438142354_4"}
+        // --- TIENDA CON IMÁGENES REALES ---
+        function initStore() {
+            const rawData = [
+                {n: "Gabinete RGB Pro", c: "PC Gamer", p: 2500, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&q=80"},
+                {n: "Sudadera Akatsuki", c: "Ropa Friki", p: 850, img: "https://m.media-amazon.com/images/I/51N-3YpY4HL._AC_UX679_.jpg"},
+                {n: "Elden Ring PS5", c: "Juegos", p: 1200, img: "https://m.media-amazon.com/images/I/81B-87eWj5L._AC_SL1500_.jpg"},
+                {n: "Teclado Mecánico", c: "PC Gamer", p: 1800, img: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400&q=80"},
+                {n: "Hoodie Shinobi", c: "Ropa Friki", p: 650, img: "https://m.media-amazon.com/images/I/61M-FfV7XAL._AC_UX679_.jpg"},
+                {n: "Zelda Switch", c: "Juegos", p: 1100, img: "https://m.media-amazon.com/images/I/81SSTVAtx4L._AC_SL1500_.jpg"}
             ];
 
-            for(let i=1; i<=50; i++) {
-                let pool = (i % 3 === 0) ? hardware : (i % 3 === 1 ? ropa : juegos);
-                let item = pool[Math.floor(Math.random() * pool.length)];
+            // Generamos 50 items basados en la data real
+            for(let i=0; i<50; i++) {
+                let base = rawData[i % rawData.length];
                 allProducts.push({
                     id: i,
-                    name: `${item.n} v${i}`,
-                    price: item.p + Math.floor(Math.random()*200),
-                    cat: (i % 3 === 0) ? "PC Gamer" : (i % 3 === 1 ? "Ropa Friki" : "Juegos"),
-                    img: item.img
+                    name: `${base.n} v${i}`,
+                    cat: base.c,
+                    price: base.p + Math.floor(Math.random()*100),
+                    img: base.img
                 });
             }
             render(allProducts);
+        }
+
+        function render(data) {
+            const container = document.getElementById('tab-tienda');
+            container.innerHTML = data.map(p => `
+                <div class="glow-border bg-white/5 rounded-xl overflow-hidden group">
+                    <img src="${p.img}" class="h-44 w-full object-cover">
+                    <div class="p-4">
+                        <span class="text-[9px] text-cyan-400 font-bold uppercase">${p.cat}</span>
+                        <h4 class="text-sm font-bold mb-4">${p.name}</h4>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold">$${p.price} MXN</span>
+                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black p-2 rounded-lg"><i data-lucide="plus" class="w-4"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
         }
 
         function filtrarTodo() {
@@ -145,52 +174,10 @@
             render(filtered);
         }
 
-        function render(data) {
-            const container = document.getElementById('tab-tienda');
-            container.innerHTML = data.map(p => `
-                <div class="glow-border bg-white/5 rounded-xl overflow-hidden group">
-                    <img src="${p.img}" class="h-40 w-full object-cover group-hover:scale-105 transition">
-                    <div class="p-4">
-                        <span class="text-[9px] text-cyan-400 font-bold">${p.cat}</span>
-                        <h4 class="text-sm font-bold mb-4">${p.name}</h4>
-                        <div class="flex justify-between items-center">
-                            <span class="text-lg">$${p.price.toLocaleString()} MXN</span>
-                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black p-2 rounded-lg"><i data-lucide="plus" class="w-4"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
         function addToCart(n, p) {
             cart.push({n, p});
             document.getElementById('cart-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.p,0).toLocaleString()}`;
-        }
-
-        function switchTab(id) {
-            document.getElementById('tab-tienda').classList.add('hidden');
-            document.getElementById('tab-vender').classList.add('hidden');
-            document.getElementById('tab-' + id).classList.remove('hidden');
-            document.getElementById('btn-tienda').classList.toggle('tab-active', id === 'tienda');
-            document.getElementById('btn-vender').classList.toggle('tab-active', id === 'vender');
-        }
-
-        function handleFile(i) {
-            const r = new FileReader();
-            r.onload = (e) => tempImg = e.target.result;
-            r.readAsDataURL(i.files[0]);
-        }
-
-        function saveProduct() {
-            const n = document.getElementById('n-name').value;
-            const p = document.getElementById('n-price').value;
-            const c = document.getElementById('n-cat').value;
-            if(!n || !p || !tempImg) return alert("Faltan datos");
-            allProducts.unshift({id: Date.now(), name: n, price: Number(p), cat: c, img: tempImg});
-            switchTab('tienda');
-            filtrarTodo();
+            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.p,0)} MXN`;
         }
     </script>
 </body>
