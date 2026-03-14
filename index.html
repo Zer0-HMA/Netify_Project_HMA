@@ -2,47 +2,212 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CyberLibre | Redes Inteligentes & Seguridad</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>CyberLibre 2008 | Smart Grid & Security</title>
+    <style>
+        /* --- ESTILO FRUTIGER AERO X MERCADO LIBRE --- */
+        :root {
+            --ml-yellow: #fff159;
+            --ml-blue: #3483fa;
+            --aero-blue: #00a6ff;
+            --glass: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            /* Fondo de burbujas clásico de los 2000s */
+            background: radial-gradient(circle at top, #81d4fa, #0277bd);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* --- LOGIN OVERLAY --- */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,25,50,0.7);
+            backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+
+        .login-card {
+            background: var(--glass);
+            padding: 40px; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3), inset 0 0 15px white;
+            border: 1px solid rgba(255,255,255,0.5);
+            text-align: center; width: 320px;
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* --- NAVBAR ESTILO ML --- */
+        nav {
+            background: var(--ml-yellow);
+            padding: 10px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo { font-size: 1.8rem; font-weight: bold; color: #333; font-italic: italic; }
+        .logo span { color: var(--ml-blue); }
+
+        /* --- LAYOUT --- */
+        main {
+            display: grid; grid-template-columns: 1fr 350px;
+            gap: 25px; padding: 30px 5%;
+        }
+
+        /* --- CARDS TIPO MERCADO LIBRE --- */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        
+        .card {
+            background: white; border-radius: 12px; overflow: hidden;
+            transition: 0.3s; border: 1px solid #eee; cursor: pointer;
+        }
+
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+
+        .card-img {
+            height: 180px; background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+            display: flex; align-items: center; justify-content: center; font-size: 4rem;
+        }
+
+        .card-body { padding: 15px; }
+        .price { font-size: 1.5rem; font-weight: 500; margin: 5px 0; }
+        
+        /* --- BOTONES GLOSSY --- */
+        .btn-buy {
+            background: linear-gradient(to bottom, #54a0ff, #2e86de);
+            color: white; border: none; padding: 12px; width: 100%;
+            border-radius: 8px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 0 #1b62ab; transition: 0.1s;
+        }
+
+        .btn-buy:active { transform: translateY(4px); box-shadow: none; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            background: var(--glass); border-radius: 15px; padding: 20px;
+            height: fit-content; border: 1px solid white;
+        }
+
+        .hidden { display: none !important; }
+        input { width: 90%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
+
     <div id="login-screen" class="overlay">
-        <div class="glass-card login-card animate-pop">
-            <div class="logo-area">🛡️</div>
-            <h2>Security Portal</h2>
-            <p>Admin / 123</p>
-            <input type="text" id="user" placeholder="Operador">
-            <input type="password" id="pass" placeholder="Password">
-            <button onclick="handleLogin()" class="btn-primary">Ingresar</button>
+        <div class="login-card">
+            <div style="font-size: 3rem;">🛡️</div>
+            <h2 style="color: #003366;">CyberLibre Access</h2>
+            <p style="font-size: 0.8rem; color: #555;">Operator: <b>admin</b> | Pin: <b>123</b></p>
+            <input type="text" id="user" placeholder="Operador ID">
+            <input type="password" id="pass" placeholder="Security Password">
+            <button onclick="handleLogin()" class="btn-buy">INITIALIZE SESSION</button>
         </div>
     </div>
 
     <div id="app" class="hidden">
-        <nav class="navbar">
+        <nav>
             <div class="logo">Cyber<span>Libre</span></div>
-            <div class="nav-tools">
-                <span id="user-display"></span>
-                <button onclick="handleLogout()" class="btn-logout">Salir</button>
+            <div style="display:flex; align-items:center; gap:20px;">
+                <span id="welcome"></span>
+                <button onclick="handleLogout()" style="background:none; border:none; color: #3483fa; cursor:pointer;">Cerrar sesión</button>
             </div>
         </nav>
 
-        <main class="container">
-            <section class="products-grid" id="lista-productos">
-                </section>
-
+        <main>
+            <div class="products-grid" id="lista-productos"></div>
+            
             <aside class="sidebar">
-                <div class="glass-card cart-container">
-                    <h3>Carrito de Despliegue</h3>
-                    <div id="items-carrito" class="cart-list"></div>
-                    <div class="total-box">
-                        <span>Total:</span>
-                        <span id="total-precio">$0</span>
-                    </div>
-                    <button onclick="finalizarCompra()" class="btn-buy">Confirmar Orden</button>
+                <h3 style="border-bottom: 2px solid var(--ml-blue); padding-bottom: 10px;">Carrito de Red</h3>
+                <div id="items-carrito" style="margin: 20px 0;"></div>
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size: 1.2rem;">
+                    <span>Total:</span>
+                    <span id="total-precio">$0</span>
                 </div>
+                <button onclick="finalizarCompra()" class="btn-buy" style="margin-top:20px; background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449;">CONTRATAR AHORA</button>
             </aside>
         </main>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        const productos = [
+            { id: 1, name: "SmartGrid Sentinel AI", price: 15499, img: "📡" },
+            { id: 2, name: "Quantum Firewall X800", price: 8900, img: "🛡️" },
+            { id: 3, name: "Sniffer de Red Industrial", price: 4200, img: "🔍" },
+            { id: 4, name: "Nodo Seguro IoT", price: 1500, img: "🔗" },
+            { id: 5, name: "Data Vault Pro 2026", price: 12300, img: "🗄️" }
+        ];
+
+        let carrito = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function handleLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(u === 'admin' && p === '123') {
+                localStorage.setItem('session', 'active');
+                init();
+            } else { alert("Acceso denegado, carnal"); }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('session');
+            location.reload();
+        }
+
+        function init() {
+            if(localStorage.getItem('session')) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                renderProds();
+                renderCart();
+            }
+        }
+
+        function renderProds() {
+            const grid = document.getElementById('lista-productos');
+            grid.innerHTML = productos.map(p => `
+                <div class="card">
+                    <div class="card-img">${p.img}</div>
+                    <div class="card-body">
+                        <div class="price">$${p.price.toLocaleString()}</div>
+                        <div style="color:#333; margin-bottom:10px;">${p.name}</div>
+                        <p style="font-size:0.7rem; color: #00a650; font-weight:bold;">Envío gratis Full ⚡</p>
+                        <button onclick="addToCart(${p.id})" class="btn-buy" style="font-size:0.8rem; padding:8px;">Agregar al carrito</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const p = productos.find(x => x.id === id);
+            carrito.push(p);
+            localStorage.setItem('cart', JSON.stringify(carrito));
+            renderCart();
+        }
+
+        function renderCart() {
+            const list = document.getElementById('items-carrito');
+            list.innerHTML = carrito.map(i => `
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; border-bottom:1px solid #eee;">
+                    <span>${i.name}</span>
+                    <b>$${i.price}</b>
+                </div>
+            `).join('');
+            const total = carrito.reduce((s, i) => s + i.price, 0);
+            document.getElementById('total-precio').innerText = `$${total.toLocaleString()}`;
+        }
+
+        function finalizarCompra() {
+            if(carrito.length === 0) return alert("Carrito vacío");
+            alert("¡Despliegue de red exitoso!");
+            carrito = [];
+            localStorage.removeItem('cart');
+            renderCart();
+        }
+
+        init();
+    </script>
 </body>
 </html>
