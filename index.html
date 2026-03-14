@@ -3,220 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CUERVO-FRIKI | Marketplace Legendario</title>
+    <title>CUERVO-FRIKI | Cyber Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --neon-cyan: #00f2ff; --neon-purple: #9d00ff; --neon-green: #10b981; }
         body { 
-            background: #020204; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #020204 100%);
-            background-attachment: fixed;
+            background-color: #030305; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
+            background-image: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px; background-attachment: fixed;
         }
         .audiowide { font-family: 'Audiowide', cursive; }
-        .glass-panel { background: rgba(13, 13, 20, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; }
-        .glow-cyan { box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
-        .hidden { display: none !important; }
         
-        input, select { background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 12px; color: white; border-radius: 10px; width: 100%; }
-        .btn-primary { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; font-weight: bold; padding: 12px; border-radius: 10px; transition: 0.3s; text-transform: uppercase; }
-        .btn-primary:hover { transform: scale(1.02); filter: brightness(1.2); }
+        .glass-panel { background: rgba(10, 10, 15, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; }
+        .glow-hover { transition: 0.3s; }
+        .glow-hover:hover { border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); transform: translateY(-3px); }
+        
+        .hidden { display: none !important; }
+        input, select { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 12px; color: white; outline: none; border-radius: 8px; width: 100%; transition: 0.3s; }
+        input:focus { border-color: var(--neon-purple); }
+        
+        .btn-primary { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary:hover { filter: brightness(1.3); box-shadow: 0 0 15px var(--neon-purple); }
+        
+        .avatar-opt { cursor: pointer; border: 2px solid transparent; border-radius: 50%; transition: 0.3s; width: 45px; height: 45px; background: rgba(255,255,255,0.05); }
+        .avatar-selected { border-color: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); transform: scale(1.15); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
 
-        /* Notificaciones */
-        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        .toast { background: #00f2ff; color: black; padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 10px; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
-        .avatar-opt { cursor: pointer; border: 2px solid transparent; border-radius: 50%; transition: 0.3s; width: 45px; background: #222; }
-        .avatar-selected { border-color: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); }
+        /* Loader para pago */
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--neon-cyan); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="overflow-x-hidden">
 
-    <div id="toast-container"></div>
-
-    <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95">
-        <div class="glass-panel p-10 max-w-md w-full border-t-4 border-cyan-500">
+    <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md overflow-y-auto py-10">
+        <div class="glass-panel p-8 max-w-md w-full relative overflow-hidden my-auto">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-cyan-400"></div>
+            
             <div id="login-box">
-                <h1 class="audiowide text-4xl mb-2 text-center">CUERVO-<span class="text-cyan-400">FRIKI</span></h1>
-                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.5em]">AUTH_REQUIRED</p>
+                <h1 class="audiowide text-4xl mb-1 text-center">CUERVO-<span class="text-cyan-400">FRIKI</span></h1>
+                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">SYSTEM_LOGIN</p>
                 <div class="space-y-4">
                     <input type="text" id="login-ident" placeholder="Usuario o Correo">
                     <input type="password" id="login-pass" placeholder="Contraseña">
-                    <button onclick="login()" class="btn-primary w-full">Ingresar</button>
-                    <p class="text-center text-xs mt-4">¿Sin acceso? <a href="#" onclick="toggleAuth()" class="text-cyan-400">Crear Perfil</a></p>
+                    <button onclick="login()" class="btn-primary w-full">Iniciar Conexión</button>
+                    <p class="text-center text-xs mt-4">¿No tienes cuenta? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:text-white transition">Registrar Módulo</a></p>
                 </div>
             </div>
 
             <div id="register-box" class="hidden">
-                <h1 class="audiowide text-2xl mb-4 text-center">NUEVO <span class="text-purple-500">USER</span></h1>
-                <div class="grid grid-cols-4 gap-2 mb-6" id="avatar-selector">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=A" class="avatar-opt avatar-selected" onclick="selectAvatar(this, 'A')">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=B" class="avatar-opt" onclick="selectAvatar(this, 'B')">
-                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=C" class="avatar-opt" onclick="selectAvatar(this, 'C', 'pixel-art')">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=D" class="avatar-opt" onclick="selectAvatar(this, 'D', 'avataaars')">
+                <h1 class="audiowide text-2xl mb-1 text-center">NUEVO <span class="text-purple-500">OPERADOR</span></h1>
+                <p class="text-[10px] text-gray-500 mb-4 text-center tracking-[0.4em]">SELECCIONA_AVATAR</p>
+                
+                <div class="grid grid-cols-4 gap-2 mb-6 justify-items-center bg-black/30 p-3 rounded-xl border border-white/5" id="avatar-selector">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="avatar-opt" onclick="selectAvatar(this, 'Felix', 'avataaars')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" class="avatar-opt" onclick="selectAvatar(this, 'Aneka', 'avataaars')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" class="avatar-opt" onclick="selectAvatar(this, 'Jack', 'avataaars')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jocelyn" class="avatar-opt" onclick="selectAvatar(this, 'Jocelyn', 'avataaars')">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Hero" class="avatar-opt" onclick="selectAvatar(this, 'Hero', 'pixel-art')">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Mage" class="avatar-opt" onclick="selectAvatar(this, 'Mage', 'pixel-art')">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Rogue" class="avatar-opt" onclick="selectAvatar(this, 'Rogue', 'pixel-art')">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=King" class="avatar-opt" onclick="selectAvatar(this, 'King', 'pixel-art')">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Destiny" class="avatar-opt" onclick="selectAvatar(this, 'Destiny', 'adventurer')">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Precious" class="avatar-opt" onclick="selectAvatar(this, 'Precious', 'adventurer')">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Shadow" class="avatar-opt" onclick="selectAvatar(this, 'Shadow', 'adventurer')">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Caleb" class="avatar-opt" onclick="selectAvatar(this, 'Caleb', 'adventurer')">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cyborg" class="avatar-opt" onclick="selectAvatar(this, 'Cyborg', 'bottts')">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Mega" class="avatar-opt" onclick="selectAvatar(this, 'Mega', 'bottts')">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Prime" class="avatar-opt" onclick="selectAvatar(this, 'Prime', 'bottts')">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Glitch" class="avatar-opt" onclick="selectAvatar(this, 'Glitch', 'bottts')">
                 </div>
+
                 <div class="space-y-3">
-                    <input type="text" id="reg-user" placeholder="Nombre de Usuario">
-                    <input type="email" id="reg-mail" placeholder="Correo">
-                    <input type="password" id="reg-pass" placeholder="Contraseña">
-                    <button onclick="register()" class="btn-primary w-full">Vincular</button>
-                    <p class="text-center text-xs mt-3"><a href="#" onclick="toggleAuth()" class="text-gray-500">Volver</a></p>
+                    <input type="text" id="reg-user" placeholder="Nombre de Usuario (Único)">
+                    <input type="email" id="reg-mail" placeholder="Correo Electrónico">
+                    <input type="password" id="reg-pass" placeholder="Contraseña Segura">
+                    <button onclick="register()" class="btn-primary w-full">Crear Cuenta</button>
+                    <p class="text-center text-xs mt-3"><a href="#" onclick="toggleAuth()" class="text-gray-500 hover:text-white transition">Volver al Login</a></p>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="app" class="hidden min-h-screen flex flex-col">
-        <header class="glass-panel sticky top-0 z-50 rounded-none px-6 py-4 flex justify-between items-center">
-            <div class="audiowide text-2xl text-cyan-400" onclick="switchTab('tienda')">CUERVO-FRIKI</div>
-            <nav class="flex gap-6 items-center">
-                <button onclick="switchTab('tienda')" class="hover:text-cyan-400"><i data-lucide="layout-grid"></i></button>
-                <button onclick="switchTab('vender')" class="hover:text-cyan-400"><i data-lucide="plus-square"></i></button>
-                <button onclick="switchTab('perfil')" class="flex items-center gap-2">
-                    <img id="nav-avatar" src="" class="w-8 h-8 rounded-full border border-purple-500">
-                    <span id="nav-user" class="text-xs font-bold hidden sm:block"></span>
-                </button>
-                <button onclick="logout()" class="text-red-500"><i data-lucide="log-out"></i></button>
-            </nav>
+        <header class="glass-panel sticky top-0 z-50 rounded-none border-t-0 border-l-0 border-r-0 border-b border-white/10 px-6 py-3">
+            <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
+                <div class="audiowide text-2xl text-cyan-400 cursor-pointer" onclick="switchTab('tienda')">CUERVO-FRIKI</div>
+                
+                <div class="relative flex-grow max-w-md hidden md:block">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
+                    <input type="text" id="search-bar" onkeyup="filtrar()" placeholder="Buscar en Cuervo-Friki..." class="pl-10 py-2 rounded-full text-sm">
+                </div>
+
+                <nav class="flex gap-6 items-center">
+                    <button onclick="switchTab('tienda')" class="text-xs font-bold hover:text-cyan-400 transition">MARKET</button>
+                    <button onclick="switchTab('vender')" class="text-xs font-bold hover:text-cyan-400 transition">VENDER</button>
+                    <button onclick="switchTab('perfil')" class="flex items-center gap-2 hover:opacity-80 transition">
+                        <img id="nav-avatar" src="" class="w-8 h-8 rounded-full border border-purple-500 bg-white/5">
+                        <span id="nav-user" class="audiowide text-xs text-purple-400 hidden sm:block"></span>
+                    </button>
+                    <button onclick="logout()" class="text-red-500 hover:text-red-400"><i data-lucide="power" class="w-5"></i></button>
+                </nav>
+            </div>
         </header>
 
-        <main class="container mx-auto p-6 flex-grow">
-            <div id="tab-tienda" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <aside class="glass-panel p-6 h-fit space-y-6">
-                    <div>
-                        <h3 class="audiowide text-xs mb-4 text-cyan-400 uppercase">Filtros</h3>
-                        <div class="space-y-2 text-sm" id="filter-container">
-                            <label class="flex items-center gap-2"><input type="checkbox" value="PC Gamer" checked onchange="filtrar()"> Hardware</label>
-                            <label class="flex items-center gap-2"><input type="checkbox" value="Ropa Friki" checked onchange="filtrar()"> Ropa Geek</label>
+        <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8 flex-grow">
+            <aside class="space-y-6" id="sidebar">
+                <div class="glass-panel p-5 glow-hover">
+                    <h3 class="audiowide text-xs mb-4 text-cyan-400 flex items-center gap-2"><i data-lucide="filter" class="w-4"></i> FILTROS</h3>
+                    <div class="space-y-3 text-sm text-gray-300" id="filter-container">
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition"><input type="checkbox" value="PC Gamer" checked onchange="filtrar()" class="accent-cyan-400 w-4 h-4"> Hardware & PC</label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition"><input type="checkbox" value="Ropa Friki" checked onchange="filtrar()" class="accent-cyan-400 w-4 h-4"> Ropa Geek</label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition"><input type="checkbox" value="Juegos" checked onchange="filtrar()" class="accent-cyan-400 w-4 h-4"> Videojuegos</label>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 glow-hover border-cyan-900/30">
+                    <h3 class="audiowide text-xs mb-3 flex items-center gap-2"><i data-lucide="shopping-cart" class="w-4"></i> CARRITO</h3>
+                    <div id="cart-list" class="text-xs space-y-2 mb-4 max-h-48 overflow-y-auto pr-2 text-gray-400"></div>
+                    <div class="flex justify-between font-bold text-cyan-400 text-sm border-t border-white/10 pt-3 mb-4">
+                        <span>TOTAL:</span><span id="cart-total">$0 MXN</span>
+                    </div>
+                    <button onclick="openCheckout()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-3 rounded font-bold text-xs uppercase hover:brightness-110 transition shadow-[0_0_15px_rgba(0,242,255,0.4)]">Ir a la Caja</button>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-3 relative">
+                <div id="tab-tienda" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                <div id="tab-vender" class="hidden glass-panel p-8 max-w-2xl mx-auto glow-hover">
+                    <h2 class="audiowide text-2xl mb-6 text-cyan-400 text-center flex items-center justify-center gap-2"><i data-lucide="upload-cloud"></i> PUBLICAR ARTÍCULO</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <input type="text" id="new-name" placeholder="Título del Producto">
+                            <input type="number" id="new-price" placeholder="Precio ($ MXN)">
+                            <select id="new-cat">
+                                <option value="PC Gamer">PC Gamer / Hardware</option>
+                                <option value="Ropa Friki">Ropa Friki / Cosplay</option>
+                                <option value="Juegos">Videojuegos / Consolas</option>
+                            </select>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="border-2 border-dashed border-gray-600 rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer hover:border-cyan-400 transition text-gray-400" onclick="document.getElementById('new-file').click()">
+                                <i data-lucide="image-plus" class="w-8 h-8 mb-2"></i>
+                                <span class="text-xs text-center px-4">Clic para subir foto</span>
+                                <input type="file" id="new-file" class="hidden" accept="image/*" onchange="previewUpload(this)">
+                            </div>
+                            <img id="upload-preview" src="" class="hidden w-full h-24 object-cover rounded-lg border border-cyan-500">
                         </div>
                     </div>
-                    <div class="border-t border-white/5 pt-4">
-                        <h3 class="audiowide text-xs mb-3 flex items-center gap-2"><i data-lucide="shopping-bag" class="w-4"></i> Carrito</h3>
-                        <div id="cart-list" class="text-xs space-y-2 mb-4 max-h-40 overflow-auto"></div>
-                        <div class="flex justify-between font-bold text-cyan-400 mb-4"><span>Total:</span><span id="cart-total">$0</span></div>
-                        <button onclick="openCheckout()" class="w-full bg-cyan-500 text-black py-2 rounded-lg font-bold text-xs">PAGAR CAJA</button>
-                    </div>
-                </aside>
-                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="store-grid"></div>
-            </div>
-
-            <div id="tab-vender" class="hidden glass-panel p-8 max-w-xl mx-auto">
-                <h2 class="audiowide text-2xl mb-6 text-center text-cyan-400">Vender Artículo</h2>
-                <div class="space-y-4">
-                    <input type="text" id="new-name" placeholder="¿Qué vendes?">
-                    <input type="number" id="new-price" placeholder="Precio MXN">
-                    <select id="new-cat">
-                        <option value="PC Gamer">PC Gamer</option>
-                        <option value="Ropa Friki">Ropa Friki</option>
-                    </select>
-                    <input type="file" id="new-file" onchange="previewImg(this)" class="text-xs">
-                    <button onclick="publish()" class="btn-primary w-full">Subir al Mercado</button>
+                    <button onclick="publishProduct()" class="btn-primary w-full mt-6">Publicar en Cuervo-Friki</button>
                 </div>
-            </div>
-
-            <div id="tab-perfil" class="hidden space-y-8">
-                <div class="glass-panel p-8 flex flex-col md:flex-row gap-8 items-center">
-                    <img id="dash-avatar" src="" class="w-32 h-32 rounded-full border-4 border-cyan-400">
-                    <div class="flex-grow">
-                        <h2 class="audiowide text-4xl" id="dash-name"></h2>
-                        <p id="dash-mail" class="text-gray-500"></p>
+                <div id="tab-perfil" class="hidden space-y-6">
+                    <div class="glass-panel p-6 flex flex-col md:flex-row items-center gap-6">
+                        <img id="dash-avatar" src="" class="w-24 h-24 rounded-full border-4 border-purple-500 bg-white/5">
+                        <div class="flex-grow text-center md:text-left">
+                            <h2 class="audiowide text-3xl text-white" id="dash-user"></h2>
+                            <p class="text-sm text-gray-400 mb-4" id="dash-mail"></p>
+                            <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-xs border border-purple-500/50">Vendedor Verificado</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/5"><p class="text-[10px] text-gray-500 uppercase">Ventas</p><p class="text-2xl font-bold text-cyan-400" id="stat-sales">0</p></div>
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/5"><p class="text-[10px] text-gray-500 uppercase">Ganancias</p><p class="text-2xl font-bold text-green-400" id="stat-revenue">$0</p></div>
+                        </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="text-center p-4 bg-white/5 rounded-xl"><p class="text-xs text-gray-400">VENTAS</p><p class="text-2xl font-bold" id="stat-sales">0</p></div>
-                        <div class="text-center p-4 bg-white/5 rounded-xl"><p class="text-xs text-gray-400">GANADO</p><p class="text-2xl font-bold text-green-400" id="stat-rev">$0</p></div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <section>
-                        <h3 class="audiowide text-xl text-cyan-400 mb-4 flex items-center gap-2"><i data-lucide="package"></i> Mis Ventas Activas</h3>
-                        <div id="dash-products" class="space-y-3"></div>
-                    </section>
-                    <section>
-                        <h3 class="audiowide text-xl text-purple-400 mb-4 flex items-center gap-2"><i data-lucide="history"></i> Historial de Compras</h3>
-                        <div id="dash-history" class="space-y-3"></div>
-                    </section>
+                    <h3 class="audiowide text-xl text-cyan-400 mb-4 border-b border-white/10 pb-2">TUS ARTÍCULOS ACTIVOS</h3>
+                    <div id="dash-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="checkout-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/95 p-4">
-        <div class="glass-panel p-8 max-w-sm w-full text-center">
-            <i data-lucide="shield-check" class="w-12 h-12 text-cyan-400 mx-auto mb-4"></i>
-            <h2 class="audiowide text-xl mb-6">Confirmar Compra</h2>
-            <p class="text-3xl font-bold mb-8" id="check-total">$0</p>
-            <button onclick="processFinal()" class="btn-primary w-full mb-4">Pagar con Tarjeta (Simulado)</button>
-            <button onclick="closeCheckout()" class="text-xs text-gray-500 uppercase tracking-widest">Cancelar</button>
+    <div id="checkout-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md">
+        <div class="glass-panel p-6 max-w-md w-full relative">
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x"></i></button>
+            <h2 class="audiowide text-xl mb-2 text-cyan-400">PASARELA DE PAGO</h2>
+            <div class="flex justify-between items-center mb-6 bg-black/30 p-3 rounded-lg border border-white/5">
+                <span class="text-sm text-gray-300">Total a pagar:</span>
+                <span class="text-2xl font-bold text-green-400" id="checkout-total">$0 MXN</span>
+            </div>
+
+            <div class="flex gap-2 mb-4">
+                <button onclick="switchPayTab('tarjeta')" id="tab-btn-tarjeta" class="flex-1 py-2 text-xs font-bold rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500">Tarjeta Bancaria</button>
+                <button onclick="switchPayTab('whatsapp')" id="tab-btn-whatsapp" class="flex-1 py-2 text-xs font-bold rounded bg-white/5 text-gray-400 hover:bg-white/10">Trato por WhatsApp</button>
+            </div>
+            
+            <div id="pay-tarjeta" class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-400 uppercase">Número de Tarjeta</label>
+                    <div class="relative">
+                        <i data-lucide="credit-card" class="absolute left-3 top-3.5 w-5 text-gray-500"></i>
+                        <input type="text" id="cc-num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCC(this)" class="pl-10 font-mono text-sm tracking-widest">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-gray-400 uppercase">Vencimiento</label>
+                        <input type="text" id="cc-exp" placeholder="MM/YY" maxlength="5" oninput="formatExp(this)" class="font-mono text-sm text-center">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-400 uppercase">CVV</label>
+                        <input type="password" id="cc-cvv" placeholder="123" maxlength="4" class="font-mono text-sm text-center">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-400 uppercase">Nombre del Titular</label>
+                    <input type="text" id="cc-name" placeholder="Como aparece en la tarjeta" class="text-sm">
+                </div>
+                <button id="btn-procesar" onclick="simularPagoBanco()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition mt-2 shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                    <i data-lucide="lock" class="w-4"></i> Pagar Seguro
+                </button>
+            </div>
+
+            <div id="pay-whatsapp" class="hidden space-y-4 text-center py-4">
+                <div class="bg-[#25D366]/10 p-4 rounded-xl border border-[#25D366]/30">
+                    <i data-lucide="message-circle" class="w-12 h-12 text-[#25D366] mx-auto mb-2"></i>
+                    <h3 class="font-bold text-white mb-2">Cerrar trato con el vendedor</h3>
+                    <p class="text-xs text-gray-300 mb-4">Se generará un mensaje automático con tu pedido para coordinar el pago (Transferencia, OXXO, Efectivo) directo con nosotros.</p>
+                    <button onclick="pagarPorWhatsApp('5215500000000')" class="w-full bg-[#25D366] hover:bg-[#1ebd5a] text-black font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition">
+                        Enviar mensaje de compra
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
         lucide.createIcons();
-        let user = null;
+        let currentSession = null;
+        let selectedAvatarUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix';
+        let tempUploadImg = '';
         let cart = [];
-        let tempImg = '';
-        let selAv = 'https://api.dicebear.com/7.x/bottts/svg?seed=A';
-
-        function showToast(msg) {
-            const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
-            document.getElementById('toast-container').appendChild(t);
-            setTimeout(() => t.remove(), 3000);
+        
+        // --- BASE DE DATOS LOCAL ---
+        function getDB() {
+            let db = JSON.parse(localStorage.getItem('cf_marketplace'));
+            if(!db) {
+                db = { users: [], products: [] };
+                const defaults = [
+                    { n: "RTX 4090 Cuervo Edition", c: "PC Gamer", p: 45000, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" },
+                    { n: "Chamarra Cyberpunk", c: "Ropa Friki", p: 2500, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400" },
+                    { n: "Zelda OLED Console", c: "Juegos", p: 6500, img: "https://images.unsplash.com/photo-1617396900799-f4c926940026?w=400" }
+                ];
+                for(let i=0; i<30; i++) {
+                    let d = defaults[i%3];
+                    db.products.push({ id: Date.now()+i, name: `${d.n} v${i}`, cat: d.c, price: d.p + (i*100), img: d.img, owner: 'system', status: 'active' });
+                }
+                localStorage.setItem('cf_marketplace', JSON.stringify(db));
+            }
+            return db;
         }
+        function saveDB(db) { localStorage.setItem('cf_marketplace', JSON.stringify(db)); }
 
-        function getDB() { return JSON.parse(localStorage.getItem('cf_db')) || { users: [], products: [], orders: [] }; }
-        function saveDB(db) { localStorage.setItem('cf_db', JSON.stringify(db)); }
-
-        function selectAvatar(el, s, t='bottts') {
-            document.querySelectorAll('.avatar-opt').forEach(i => i.classList.remove('avatar-selected'));
-            el.classList.add('avatar-selected');
-            selAv = `https://api.dicebear.com/7.x/${t}/svg?seed=${s}`;
-        }
-
+        // --- AUTH & AVATARES ---
         function toggleAuth() { document.getElementById('login-box').classList.toggle('hidden'); document.getElementById('register-box').classList.toggle('hidden'); }
-
+        function selectAvatar(el, seed, type) {
+            document.querySelectorAll('.avatar-opt').forEach(img => img.classList.remove('avatar-selected'));
+            el.classList.add('avatar-selected');
+            selectedAvatarUrl = `https://api.dicebear.com/7.x/${type}/svg?seed=${seed}`;
+        }
         function register() {
-            const u = document.getElementById('reg-user').value, e = document.getElementById('reg-mail').value, p = document.getElementById('reg-pass').value;
+            const u = document.getElementById('reg-user').value.trim(), e = document.getElementById('reg-mail').value.trim(), p = document.getElementById('reg-pass').value;
+            if(!u || !e || !p) return alert("Completa todos los datos");
             let db = getDB();
-            db.users.push({ u, e, p, avatar: selAv, sales: 0, rev: 0 });
-            saveDB(db); showToast("Perfil Creado!"); toggleAuth();
+            if(db.users.find(user => user.u === u || user.e === e)) return alert("Usuario o correo ya registrado");
+            db.users.push({ u, e, p, avatar: selectedAvatarUrl, sales: 0, revenue: 0 });
+            saveDB(db); alert("Operador Registrado. Inicia Sesión."); toggleAuth();
         }
-
         function login() {
-            const i = document.getElementById('login-ident').value, p = document.getElementById('login-pass').value;
-            const db = getDB();
-            const found = db.users.find(u => (u.u === i || u.e === i) && u.p === p);
-            if(found) { user = found; startApp(); } else alert("Error");
+            const ident = document.getElementById('login-ident').value.trim(), pass = document.getElementById('login-pass').value;
+            let db = getDB();
+            const user = db.users.find(u => (u.u === ident || u.e === ident) && u.p === pass);
+            if(user) { currentSession = user; localStorage.setItem('cf_session', JSON.stringify(user)); startApp(); } 
+            else { alert("Acceso Denegado. Revisa tus credenciales."); }
         }
+        function logout() { localStorage.removeItem('cf_session'); location.reload(); }
 
+        // --- APP Y TIENDA ---
         function startApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
-            document.getElementById('nav-avatar').src = user.avatar;
-            document.getElementById('nav-user').innerText = user.u;
-            filtrar();
+            document.getElementById('nav-avatar').src = currentSession.avatar;
+            document.getElementById('nav-user').innerText = currentSession.u.toUpperCase();
+            filtrar(); updateProfileDashboard();
+        }
+        function switchTab(tab) {
+            ['tienda', 'vender', 'perfil'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById('sidebar').classList.toggle('hidden', tab === 'perfil');
+            if(tab === 'perfil') updateProfileDashboard();
         }
 
-        function switchTab(t) {
-            ['tienda','vender','perfil'].forEach(x => document.getElementById(`tab-${x}`).classList.add('hidden'));
-            document.getElementById(`tab-${t}`).classList.remove('hidden');
-            if(t === 'perfil') loadDashboard();
-        }
-
-        function renderStore(prods) {
-            document.getElementById('store-grid').innerHTML = prods.map(p => `
-                <div class="glass-panel overflow-hidden group">
-                    <img src="${p.img}" class="h-48 w-full object-cover group-hover:scale-105 transition">
-                    <div class="p-4">
-                        <div class="flex justify-between text-[10px] text-cyan-400 uppercase mb-2"><span>${p.cat}</span><span>Vendedor: ${p.owner}</span></div>
-                        <h4 class="font-bold mb-4">${p.name}</h4>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-black">$${p.price}</span>
-                            <button onclick="addToCart(${p.id})" class="bg-white text-black p-2 rounded-lg hover:bg-cyan-400 transition"><i data-lucide="plus"></i></button>
+        function render(products, containerId = 'tab-tienda', showBuyBtn = true) {
+            const container = document.getElementById(containerId);
+            if(products.length === 0) return container.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">Vacío.</p>`;
+            container.innerHTML = products.map(p => `
+                <div class="glass-panel overflow-hidden glow-hover relative flex flex-col h-full">
+                    ${!showBuyBtn ? `<div class="absolute top-2 right-2 bg-purple-600 text-white text-[9px] px-2 py-1 rounded-full z-10">TUYO</div>` : ''}
+                    <div class="h-48 overflow-hidden"><img src="${p.img}" class="w-full h-full object-cover hover:scale-110 transition duration-500"></div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] text-cyan-400 border border-cyan-400/30 px-2 py-0.5 rounded uppercase tracking-wider">${p.cat}</span>
+                            <span class="text-[9px] text-gray-500"><i data-lucide="user" class="w-3 inline"></i> ${p.owner}</span>
                         </div>
-                        <button onclick="alert('Iniciando chat con ${p.owner}...')" class="text-[10px] mt-4 text-gray-500 hover:text-white flex items-center gap-1"><i data-lucide="message-square" class="w-3"></i> Preguntar al vendedor</button>
+                        <h4 class="text-lg font-bold mb-4 flex-grow text-gray-100">${p.name}</h4>
+                        <div class="flex justify-between items-center mt-auto pt-4 border-t border-white/5">
+                            <span class="text-xl font-black text-white">$${p.price.toLocaleString()}</span>
+                            ${showBuyBtn ? `<button onclick="addToCart(${p.id})" class="bg-white text-black p-2 rounded-lg hover:bg-cyan-400 transition shadow-[0_0_10px_rgba(255,255,255,0.2)]"><i data-lucide="shopping-cart" class="w-5 h-5"></i></button>` : ''}
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -224,94 +323,120 @@
         }
 
         function filtrar() {
-            const db = getDB();
-            const checks = Array.from(document.querySelectorAll('#filter-container input:checked')).map(c => c.value);
-            renderStore(db.products.filter(p => p.status === 'active' && checks.includes(p.cat)));
+            const s = document.getElementById('search-bar').value.toLowerCase();
+            const checks = Array.from(document.querySelectorAll('#filter-container input:checked')).map(v => v.value);
+            render(getDB().products.filter(p => p.status === 'active' && p.name.toLowerCase().includes(s) && checks.includes(p.cat)));
         }
 
+        function previewUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => { tempUploadImg = e.target.result; document.getElementById('upload-preview').src = tempUploadImg; document.getElementById('upload-preview').classList.remove('hidden'); };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function publishProduct() {
+            const n = document.getElementById('new-name').value, p = document.getElementById('new-price').value, c = document.getElementById('new-cat').value;
+            if(!n || !p || !tempUploadImg) return alert("Faltan datos o la imagen.");
+            let db = getDB();
+            db.products.unshift({ id: Date.now(), name: n, price: Number(p), cat: c, img: tempUploadImg, owner: currentSession.u, status: 'active' });
+            saveDB(db); alert("¡Artículo publicado!");
+            document.getElementById('new-name').value = ''; document.getElementById('new-price').value = ''; document.getElementById('upload-preview').classList.add('hidden'); tempUploadImg = '';
+            switchTab('tienda'); filtrar();
+        }
+
+        // --- CARRITO ---
         function addToCart(id) {
-            const p = getDB().products.find(x => x.id === id);
-            if(p.owner === user.u) return showToast("Es tu propio item!");
-            cart.push(p); updateCart(); showToast("Agregado!");
+            const product = getDB().products.find(p => p.id === id);
+            if(product.owner === currentSession.u) return alert("No puedes comprar tu propio artículo.");
+            cart.push(product); updateCartUI();
         }
-
-        function updateCart() {
-            document.getElementById('cart-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.price,0)}`;
+        function updateCartUI() {
+            document.getElementById('cart-list').innerHTML = cart.map((i, index) => `
+                <div class="flex justify-between items-center group">
+                    <span class="truncate w-32">${i.name}</span>
+                    <div class="flex items-center gap-2"><span class="text-cyan-400">$${i.price}</span><i data-lucide="trash-2" class="w-3 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100" onclick="removeFromCart(${index})"></i></div>
+                </div>`).join('');
+            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.price,0).toLocaleString()} MXN`;
+            lucide.createIcons();
         }
-
+        function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
         function openCheckout() {
-            if(cart.length === 0) return;
-            document.getElementById('check-total').innerText = document.getElementById('cart-total').innerText;
+            if(cart.length === 0) return alert("Tu carrito está vacío.");
+            document.getElementById('checkout-total').innerText = document.getElementById('cart-total').innerText;
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
         function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
 
-        function processFinal() {
+        // --- PASARELA DE PAGO REALISTA ---
+        function switchPayTab(tab) {
+            document.getElementById('pay-tarjeta').classList.toggle('hidden', tab !== 'tarjeta');
+            document.getElementById('pay-whatsapp').classList.toggle('hidden', tab !== 'whatsapp');
+            document.getElementById('tab-btn-tarjeta').className = tab === 'tarjeta' ? "flex-1 py-2 text-xs font-bold rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500" : "flex-1 py-2 text-xs font-bold rounded bg-white/5 text-gray-400 hover:bg-white/10";
+            document.getElementById('tab-btn-whatsapp').className = tab === 'whatsapp' ? "flex-1 py-2 text-xs font-bold rounded bg-[#25D366]/20 text-[#25D366] border border-[#25D366]" : "flex-1 py-2 text-xs font-bold rounded bg-white/5 text-gray-400 hover:bg-white/10";
+        }
+
+        function formatCC(input) { input.value = input.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim(); }
+        function formatExp(input) { input.value = input.value.replace(/\D/g, '').replace(/(\d{2})(\d{1,2})/, '$1/$2').trim(); }
+
+        function simularPagoBanco() {
+            const num = document.getElementById('cc-num').value, exp = document.getElementById('cc-exp').value, cvv = document.getElementById('cc-cvv').value, nom = document.getElementById('cc-name').value;
+            if(num.length < 19 || exp.length < 5 || cvv.length < 3 || !nom) return alert("Por favor, llena correctamente los datos de la tarjeta.");
+            
+            const btn = document.getElementById('btn-procesar');
+            btn.innerHTML = `<span class="loader"></span> Procesando con el banco...`;
+            btn.disabled = true;
+
+            // Simular tiempo de validación bancaria (3 segundos)
+            setTimeout(() => {
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-5"></i> ¡Pago Aprobado!`;
+                btn.classList.replace('bg-blue-600', 'bg-green-500');
+                
+                setTimeout(() => { procesarVentaFinal('Tarjeta'); }, 1000);
+            }, 2500);
+        }
+
+        // --- OPCIÓN WHATSAPP (REAL) ---
+        function pagarPorWhatsApp(numeroTelefono) {
+            let lista = cart.map(item => `- ${item.name} ($${item.price})`).join('%0A');
+            let total = document.getElementById('cart-total').innerText;
+            let mensaje = `¡Hola *Cuervo-Friki*! 🐦‍⬛%0AQuiero realizar el pago de los siguientes artículos:%0A%0A${lista}%0A%0A*Total: ${total}*%0A%0A¿Me proporcionas los datos para transferencia/depósito por favor?`;
+            
+            window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
+            procesarVentaFinal('WhatsApp'); // Limpia el carrito después de mandar el mensaje
+        }
+
+        function procesarVentaFinal(metodo) {
             let db = getDB();
-            cart.forEach(item => {
-                // Marcar vendido
-                db.products.find(p => p.id === item.id).status = 'sold';
-                // Ganancia vendedor
-                let seller = db.users.find(u => u.u === item.owner);
-                if(seller) { seller.sales++; seller.rev += item.price; }
-                // Registrar orden para el comprador
-                db.orders.push({ buyer: user.u, item: item.name, price: item.price, date: new Date().toLocaleDateString(), track: 'CF-'+Math.random().toString(36).substr(2,9).toUpperCase() });
+            cart.forEach(cartItem => {
+                let prodIndex = db.products.findIndex(p => p.id === cartItem.id);
+                if(prodIndex > -1) db.products[prodIndex].status = 'sold';
+                let sellerIndex = db.users.findIndex(u => u.u === cartItem.owner);
+                if(sellerIndex > -1) { db.users[sellerIndex].sales += 1; db.users[sellerIndex].revenue += cartItem.price; }
             });
-            saveDB(db);
-            cart = []; updateCart(); closeCheckout(); filtrar();
-            showToast("¡Compra Exitosa!");
-            alert("¡PAGO CONFIRMADO!\nTu pedido se ha registrado en tu historial con éxito.");
+            saveDB(db); 
+            if(metodo === 'Tarjeta') alert(`¡Recibo de Compra Cuervo-Friki!\nTransacción exitosa a la tarjeta terminación ${document.getElementById('cc-num').value.slice(-4)}`);
+            cart = []; updateCartUI(); closeCheckout(); filtrar();
+            
+            // Resetear botón de pago
+            const btn = document.getElementById('btn-procesar');
+            btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4"></i> Pagar Seguro`; btn.classList.replace('bg-green-500', 'bg-blue-600');
         }
 
-        function previewImg(input) {
-            const reader = new FileReader();
-            reader.onload = e => tempImg = e.target.result;
-            reader.readAsDataURL(input.files[0]);
+        function updateProfileDashboard() {
+            let freshUser = getDB().users.find(u => u.u === currentSession.u) || currentSession;
+            document.getElementById('dash-avatar').src = freshUser.avatar;
+            document.getElementById('dash-user').innerText = freshUser.u.toUpperCase();
+            document.getElementById('dash-mail').innerText = freshUser.e;
+            document.getElementById('stat-sales').innerText = freshUser.sales || 0;
+            document.getElementById('stat-revenue').innerText = `$${(freshUser.revenue || 0).toLocaleString()}`;
+            render(getDB().products.filter(p => p.owner === freshUser.u && p.status === 'active'), 'dash-products', false);
         }
 
-        function publish() {
-            const n = document.getElementById('new-name').value, p = Number(document.getElementById('new-price').value), c = document.getElementById('new-cat').value;
-            let db = getDB();
-            db.products.unshift({ id: Date.now(), name: n, price: p, cat: c, img: tempImg, owner: user.u, status: 'active' });
-            saveDB(db); showToast("¡Publicado!"); switchTab('tienda'); filtrar();
-        }
-
-        function loadDashboard() {
-            const db = getDB();
-            const uInfo = db.users.find(u => u.u === user.u);
-            document.getElementById('dash-avatar').src = uInfo.avatar;
-            document.getElementById('dash-name').innerText = uInfo.u;
-            document.getElementById('dash-mail').innerText = uInfo.e;
-            document.getElementById('stat-sales').innerText = uInfo.sales;
-            document.getElementById('stat-rev').innerText = `$${uInfo.rev}`;
-
-            // Mis Ventas
-            document.getElementById('dash-products').innerHTML = db.products.filter(p => p.owner === user.u && p.status === 'active').map(p => `
-                <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center">
-                    <span>${p.name}</span><span class="text-cyan-400 font-bold">$${p.price}</span>
-                </div>
-            `).join('') || '<p class="text-gray-600">No tienes artículos en venta.</p>';
-
-            // Mis Compras
-            document.getElementById('dash-history').innerHTML = db.orders.filter(o => o.buyer === user.u).map(o => `
-                <div class="bg-white/5 p-4 rounded-lg border-l-4 border-purple-500">
-                    <div class="flex justify-between mb-1"><span class="font-bold text-sm">${o.item}</span><span class="text-purple-400">$${o.price}</span></div>
-                    <div class="flex justify-between text-[10px] text-gray-500 uppercase"><span>Rastreo: ${o.track}</span><span>${o.date}</span></div>
-                    <div class="mt-2 text-[9px] bg-purple-500/20 text-purple-300 w-fit px-2 py-0.5 rounded">En preparación para envío</div>
-                </div>
-            `).join('') || '<p class="text-gray-600">Aún no has comprado nada.</p>';
-        }
-
-        function logout() { location.reload(); }
-        
-        // Carga inicial de productos si está vacío
-        if(getDB().products.length === 0) {
-            let db = getDB();
-            db.products.push({id:1, name:"Teclado Neon RGB", price:1200, cat:"PC Gamer", img:"https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400", owner:"Admin", status:"active"});
-            db.products.push({id:2, name:"Sudadera Akatsuki", price:850, cat:"Ropa Friki", img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400", owner:"Admin", status:"active"});
-            saveDB(db);
-        }
+        // --- INIT ---
+        const savedSession = localStorage.getItem('cf_session');
+        if(savedSession) { currentSession = JSON.parse(savedSession); startApp(); }
     </script>
 </body>
 </html>
