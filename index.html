@@ -3,190 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEÓN ARCADE | Marketplace 2026</title>
+    <title>FRIKI-VAULT | PC & Geek Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --pink: #ff00ff; --cyan: #00ffff; --dark: #050111; }
-        body { background: var(--dark); color: white; font-family: 'Orbitron', sans-serif; min-height: 100vh; }
-        .cyber-card { background: rgba(10, 5, 30, 0.9); border: 1px solid var(--pink); box-shadow: 0 0 15px rgba(255, 0, 255, 0.2); backdrop-filter: blur(10px); }
-        .btn-cyber { background: linear-gradient(45deg, var(--pink), var(--cyan)); clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); font-weight: bold; transition: 0.3s; color: white; }
-        .btn-cyber:hover { filter: brightness(1.2); transform: translateY(-2px); }
-        .neon-text { text-shadow: 0 0 10px var(--cyan); color: var(--cyan); }
+        :root { --rgb-pink: #ff00ff; --rgb-blue: #00f2ff; --glass: rgba(15, 15, 25, 0.85); }
+        
+        body { 
+            background: #050505; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
+            background-attachment: fixed;
+        }
+
+        .audiowide { font-family: 'Audiowide', cursive; }
+
+        /* Efecto RGB Animado */
+        .rgb-border {
+            position: relative; border: 1px solid transparent;
+            background: linear-gradient(var(--glass), var(--glass)) padding-box,
+                        linear-gradient(90deg, var(--rgb-pink), var(--rgb-blue), var(--rgb-pink)) border-box;
+            background-size: 200% auto; animation: rgb-flow 4s linear infinite;
+        }
+
+        @keyframes rgb-flow { to { background-position: 200% center; } }
+
+        .btn-gamer {
+            background: linear-gradient(45deg, #7b00ff, #00d4ff);
+            transition: 0.3s; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+        }
+        .btn-gamer:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 212, 255, 0.6); }
+
         .hidden { display: none !important; }
-        input, select { background: rgba(0,0,0,0.5); border-bottom: 2px solid var(--pink); padding: 10px; outline: none; color: var(--cyan); width: 100%; margin-bottom: 15px; }
-        .tab-btn { padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.3s; font-size: 0.8rem; }
-        .tab-btn.active { border-color: var(--cyan); color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+        
+        input, select, textarea {
+            background: rgba(255,255,255,0.05); border: 1px solid #333;
+            padding: 12px; color: white; outline: none; border-radius: 4px; width: 100%;
+        }
+        input:focus { border-color: var(--rgb-blue); box-shadow: 0 0 10px rgba(0,242,255,0.2); }
+
+        .tab-active { border-bottom: 3px solid var(--rgb-blue); color: var(--rgb-blue); text-shadow: 0 0 10px var(--rgb-blue); }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
-        <div class="p-10 cyber-card w-full max-w-md text-center">
-            <h1 class="audiowide text-2xl mb-8 neon-text">NEÓN ARCADE ACCESS</h1>
-            <input type="text" id="username" placeholder="OPERADOR_ID">
-            <input type="password" id="password" placeholder="PASSWORD_KEY">
-            <div class="flex gap-4">
-                <button onclick="login()" class="btn-cyber flex-1 py-3">LOGIN</button>
-                <button onclick="register()" class="btn-cyber flex-1 py-3" style="background: #111; border: 1px solid var(--pink);">SIGNUP</button>
+    <div id="auth-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95">
+        <div class="p-8 rgb-border max-w-md w-full backdrop-blur-xl">
+            <h1 class="audiowide text-3xl text-center mb-2 tracking-tighter">FRIKI-<span class="text-cyan-400">VAULT</span></h1>
+            <p class="text-center text-[10px] text-gray-500 mb-8 uppercase tracking-[0.3em]">Hardware & Geek Culture Access</p>
+            <div class="space-y-4">
+                <input type="text" id="username" placeholder="USER_ID">
+                <input type="password" id="password" placeholder="ACCESS_KEY">
+                <div class="flex gap-2">
+                    <button onclick="login()" class="btn-gamer flex-1 py-3 font-bold uppercase italic">Log In</button>
+                    <button onclick="register()" class="border border-purple-500 flex-1 py-3 text-sm hover:bg-purple-500/20 transition">Register</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="app" class="hidden flex flex-col min-h-screen">
-        <header class="p-4 border-b border-cyan-900 bg-black/90 sticky top-0 z-50">
-            <div class="flex justify-between items-center mb-4 px-4">
-                <div class="audiowide text-xl neon-text">NEÓN<span style="color:var(--pink)">ARCADE</span></div>
-                <button onclick="logout()" class="text-[10px] text-red-500 border border-red-500 px-2 py-1">TERMINAR_SESIÓN</button>
+        <header class="border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="audiowide text-2xl flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-tr from-purple-600 to-cyan-400 rounded-sm rotate-45"></div>
+                    FV<span class="text-cyan-400">STORE</span>
+                </div>
+                <nav class="flex gap-8 text-sm font-bold uppercase tracking-widest">
+                    <button onclick="switchTab('tienda')" class="nav-link tab-active py-2">Tienda</button>
+                    <button onclick="switchTab('vender')" class="nav-link py-2 hover:text-cyan-400">Vender</button>
+                    <button onclick="logout()" class="text-red-500 hover:text-red-400">Cerrar</button>
+                </nav>
             </div>
-            <nav class="flex justify-center gap-6 audiowide">
-                <div class="tab-btn active" onclick="switchTab('tab-tienda', this)">COMPRAR</div>
-                <div class="tab-btn" onclick="switchTab('tab-vender', this)">VENDER</div>
-                <div class="tab-btn" onclick="switchTab('tab-perfil', this)">PERFIL</div>
-            </nav>
         </header>
 
-        <main class="p-6 flex-grow container mx-auto">
+        <main class="container mx-auto px-6 py-10 flex-grow">
             
-            <section id="tab-tienda" class="tab-content grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="market-grid">
-                    </div>
-                <aside class="cyber-card p-6 h-fit sticky top-32">
-                    <h3 class="audiowide text-sm mb-4 neon-text">CARRITO</h3>
-                    <div id="cart-items" class="text-[10px] space-y-2 mb-4"></div>
-                    <div class="border-t border-pink-500 pt-4 flex justify-between audiowide">
-                        <span>TOTAL:</span>
-                        <span id="cart-total" class="text-pink-500">$0</span>
-                    </div>
-                    <button onclick="checkout()" class="btn-cyber w-full py-3 mt-4 text-xs">PAGAR_CREDITS</button>
-                </aside>
-            </section>
-
-            <section id="tab-vender" class="tab-content hidden max-w-2xl mx-auto">
-                <div class="cyber-card p-8">
-                    <h2 class="audiowide mb-6 neon-text text-center">SUBIR MÓDULO A LA RED</h2>
-                    <input type="text" id="prod-name" placeholder="Nombre del Producto">
-                    <input type="number" id="prod-price" placeholder="Precio en Credits">
-                    <select id="prod-cat">
-                        <option value="Software">Software</option>
-                        <option value="Hardware">Hardware</option>
-                        <option value="Seguridad">Seguridad</option>
-                    </select>
-                    <button onclick="createProduct()" class="btn-cyber w-full py-4 mb-8">PUBLICAR_MÓDULO</button>
-
-                    <h3 class="audiowide text-sm mb-4 text-pink-500">TUS PUBLICACIONES (EDITAR/BORRAR)</h3>
-                    <div id="my-products" class="space-y-3"></div>
-                </div>
-            </section>
-
-            <section id="tab-perfil" class="tab-content hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="cyber-card p-8">
-                        <h2 class="audiowide neon-text mb-4">DATOS DEL OPERADOR</h2>
-                        <p class="mb-2">USUARIO: <span id="prof-user" class="text-pink-500"></span></p>
-                        <p class="mb-2">ESTADO: <span class="text-green-500">ONLINE</span></p>
-                        <p>ID_CONEXIÓN: <span class="text-xs text-gray-500" id="prof-id"></span></p>
-                    </div>
-                    <div class="cyber-card p-8">
-                        <h2 class="audiowide neon-text mb-4">NOTIFICACIONES</h2>
-                        <div class="text-[10px] text-gray-400 space-y-2">
-                            <p>[OK] Sistema encriptado activado.</p>
-                            <p>[OK] Mercado global sincronizado.</p>
+            <section id="tab-tienda" class="tab-content grid grid-cols-1 lg:grid-cols-4 gap-10">
+                <aside class="space-y-8">
+                    <div class="rgb-border p-6 rounded-lg">
+                        <h3 class="audiowide text-sm mb-4 text-cyan-400">FILTROS_CATEGORÍA</h3>
+                        <div class="space-y-2 text-sm text-gray-400">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked> PC Gamers / Hardware</label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked> Ropa Geek / Friki</label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" checked> Videojuegos</label>
                         </div>
                     </div>
+                    <div class="rgb-border p-6 rounded-lg bg-cyan-900/10">
+                        <h3 class="audiowide text-sm mb-2">MI CARRITO</h3>
+                        <div id="cart-items" class="text-xs space-y-3 mb-4 max-h-40 overflow-y-auto"></div>
+                        <div class="border-t border-white/10 pt-4 flex justify-between font-bold">
+                            <span>TOTAL:</span>
+                            <span id="cart-total" class="text-cyan-400">$0</span>
+                        </div>
+                        <button onclick="checkout()" class="btn-gamer w-full py-2 mt-4 text-xs font-bold italic uppercase">Comprar Ahora</button>
+                    </div>
+                </aside>
+
+                <div class="lg:col-span-3">
+                    <div id="market-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        </div>
                 </div>
             </section>
 
+            <section id="tab-vender" class="tab-content hidden max-w-3xl mx-auto">
+                <div class="rgb-border p-8 rounded-xl bg-black/60">
+                    <h2 class="audiowide text-2xl mb-8 text-center text-cyan-400">PUBLICAR NUEVO ARTÍCULO</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <label class="text-xs text-gray-500 uppercase">Información Básica</label>
+                            <input type="text" id="prod-name" placeholder="Ej: RTX 4090 Rog Strix">
+                            <input type="number" id="prod-price" placeholder="Precio ($)">
+                            <select id="prod-cat">
+                                <option value="PC & Hardware">PC & Hardware</option>
+                                <option value="Ropa Friki">Ropa Friki</option>
+                                <option value="Videojuegos">Videojuegos</option>
+                            </select>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="text-xs text-gray-500 uppercase">Multimedia & Detalles</label>
+                            <input type="text" id="prod-img" placeholder="URL de la imagen (ej: https://...)">
+                            <textarea id="prod-desc" rows="3" placeholder="Descripción breve del producto..."></textarea>
+                        </div>
+                    </div>
+                    <button onclick="createProduct()" class="btn-gamer w-full py-4 mt-8 font-black text-lg italic uppercase tracking-tighter">SUBIR A LA VAULT</button>
+                </div>
+
+                <div class="mt-12">
+                    <h3 class="audiowide text-sm mb-6 flex items-center gap-2"><span class="w-8 h-[2px] bg-purple-500"></span> TUS VENTAS ACTIVAS</h3>
+                    <div id="my-products" class="grid grid-cols-1 gap-3"></div>
+                </div>
+            </section>
         </main>
     </div>
 
     <script>
-        // --- LÓGICA DE NAVEGACIÓN ---
-        function switchTab(tabId, el) {
+        // --- BASE DE DATOS LOCAL ---
+        const initialProducts = [
+            { id: 1, name: "PC Gamer " , price: 45000, cat: "PC & Hardware", img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80", desc: "RTX 4080, i9-14900K, 64GB RAM.", owner: "Admin" },
+            { id: 2, name: "Sudadera Akatsuki", price: 850, cat: "Ropa Friki", img: "https://m.media-amazon.com/images/I/51N-3YpY4HL._AC_UX679_.jpg", desc: "Material premium, bordado original.", owner: "Admin" },
+            { id: 3, name: "Elden Ring: Shadow Edition", price: 1400, cat: "Videojuegos", img: "https://m.media-amazon.com/images/I/81B-87eWj5L._AC_SL1500_.jpg", desc: "Código global para Steam.", owner: "Admin" }
+        ];
+
+        if(!localStorage.getItem('vault_prods')) {
+            localStorage.setItem('vault_prods', JSON.stringify(initialProducts));
+        }
+
+        let cart = [];
+
+        // --- NAVEGACIÓN ---
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('tab-active'));
+            event.target.classList.add('tab-active');
         }
 
         // --- AUTH ---
-        function register() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            if(!u || !p) return alert("Error en datos");
-            const users = JSON.parse(localStorage.getItem('arcade_users') || '{}');
-            users[u] = p;
-            localStorage.setItem('arcade_users', JSON.stringify(users));
-            alert("Registro exitoso.");
-        }
-
         function login() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
-            const users = JSON.parse(localStorage.getItem('arcade_users') || '{}');
+            const users = JSON.parse(localStorage.getItem('vault_users') || '{"admin":"123"}');
             if(users[u] === p) {
-                localStorage.setItem('arcade_session', u);
+                localStorage.setItem('vault_session', u);
                 init();
-            } else { alert("Acceso denegado"); }
+            } else { alert("ACCESO DENEGADO"); }
         }
 
-        function logout() { localStorage.removeItem('arcade_session'); location.reload(); }
+        function register() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if(!u || !p) return alert("LLENA LOS CAMPOS");
+            const users = JSON.parse(localStorage.getItem('vault_users') || '{"admin":"123"}');
+            users[u] = p;
+            localStorage.setItem('vault_users', JSON.stringify(users));
+            alert("USUARIO REGISTRADO");
+        }
 
-        // --- CRUD PRODUCTOS ---
-        let cart = [];
+        function logout() { localStorage.removeItem('vault_session'); location.reload(); }
 
+        // --- CRUD ---
         function createProduct() {
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
             const cat = document.getElementById('prod-cat').value;
-            const owner = localStorage.getItem('arcade_session');
-            if(!name || !price) return;
+            const img = document.getElementById('prod-img').value || 'https://via.placeholder.com/400x300?text=Geek+Item';
+            const desc = document.getElementById('prod-desc').value;
+            const owner = localStorage.getItem('vault_session');
 
-            const prods = JSON.parse(localStorage.getItem('arcade_prods') || '[]');
-            prods.push({ id: Date.now(), name, price, cat, owner });
-            localStorage.setItem('arcade_prods', JSON.stringify(prods));
+            if(!name || !price) return alert("Nombre y Precio obligatorios");
+
+            const prods = JSON.parse(localStorage.getItem('vault_prods'));
+            prods.push({ id: Date.now(), name, price, cat, img, desc, owner });
+            localStorage.setItem('vault_prods', JSON.stringify(prods));
+            
             render();
-            alert("Módulo subido!");
+            alert("¡PUBLICADO CON ÉXITO!");
         }
 
         function deleteProduct(id) {
-            let prods = JSON.parse(localStorage.getItem('arcade_prods') || '[]');
+            let prods = JSON.parse(localStorage.getItem('vault_prods'));
             prods = prods.filter(p => p.id != id);
-            localStorage.setItem('arcade_prods', JSON.stringify(prods));
+            localStorage.setItem('vault_prods', JSON.stringify(prods));
             render();
         }
 
         function render() {
-            const prods = JSON.parse(localStorage.getItem('arcade_prods') || '[]');
-            const currentUser = localStorage.getItem('arcade_session');
+            const prods = JSON.parse(localStorage.getItem('vault_prods'));
+            const user = localStorage.getItem('vault_session');
 
             // Render Tienda
             const market = document.getElementById('market-grid');
             market.innerHTML = prods.map(p => `
-                <div class="cyber-card p-6 flex flex-col justify-between">
-                    <div>
-                        <span class="text-[8px] bg-pink-600 px-2 py-1 rounded">${p.cat}</span>
-                        <h4 class="audiowide mt-4 neon-text">${p.name}</h4>
-                        <p class="text-[10px] text-gray-500 mb-4">Vendedor: ${p.owner}</p>
+                <div class="bg-white/5 border border-white/10 rounded-lg overflow-hidden hover:border-cyan-500 transition-all group">
+                    <div class="h-48 overflow-hidden bg-black">
+                        <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-pink-500 font-bold">$${p.price}</span>
-                        <button onclick="addToCart('${p.name}', ${p.price})" class="btn-cyber px-4 py-2 text-[10px]">COMPRAR</button>
+                    <div class="p-5">
+                        <span class="text-[9px] uppercase tracking-tighter text-purple-400 font-bold">${p.cat}</span>
+                        <h4 class="audiowide text-lg my-1">${p.name}</h4>
+                        <p class="text-xs text-gray-500 mb-4 h-8 overflow-hidden">${p.desc}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-black text-cyan-400">$${Number(p.price).toLocaleString()}</span>
+                            <button onclick="addToCart('${p.name}', ${p.price})" class="btn-gamer px-4 py-2 text-[10px] font-bold">AGREGAR</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
 
-            // Render Mis Productos (Vender)
+            // Render Mis Ventas
             const myProds = document.getElementById('my-products');
-            myProds.innerHTML = prods.filter(p => p.owner === currentUser).map(p => `
-                <div class="flex justify-between items-center p-3 border border-gray-800 bg-black/40">
-                    <span class="text-xs">${p.name} ($${p.price})</span>
-                    <button onclick="deleteProduct(${p.id})" class="text-red-500 text-[10px] hover:underline">ELIMINAR</button>
+            myProds.innerHTML = prods.filter(p => p.owner === user).map(p => `
+                <div class="flex justify-between items-center p-4 bg-white/5 border-l-4 border-purple-600">
+                    <div>
+                        <p class="font-bold text-sm">${p.name}</p>
+                        <p class="text-[10px] text-gray-400">$${p.price} | ${p.cat}</p>
+                    </div>
+                    <button onclick="deleteProduct(${p.id})" class="text-red-500 hover:text-white transition">BORRAR</button>
                 </div>
             `).join('');
         }
 
-        // --- CARRITO ---
         function addToCart(name, price) {
             cart.push({ name, price });
             updateCartUI();
@@ -194,26 +250,23 @@
 
         function updateCartUI() {
             const list = document.getElementById('cart-items');
-            list.innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
+            list.innerHTML = cart.map(i => `<div class="flex justify-between border-b border-white/5 pb-1"><span>${i.name}</span><span class="text-cyan-400">$${i.price}</span></div>`).join('');
             const total = cart.reduce((s, i) => s + i.price, 0);
-            document.getElementById('cart-total').innerText = `$${total}`;
+            document.getElementById('cart-total').innerText = `$${total.toLocaleString()}`;
         }
 
         function checkout() {
             if(cart.length === 0) return alert("CARRITO VACÍO");
-            alert("TRANSACCIÓN EXITOSA.");
+            alert("¡COMPRA EXITOSA! Tus productos están en camino.");
             cart = [];
             updateCartUI();
         }
 
-        // --- INIT ---
         function init() {
-            const user = localStorage.getItem('arcade_session');
+            const user = localStorage.getItem('vault_session');
             if(user) {
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
-                document.getElementById('prof-user').innerText = user;
-                document.getElementById('prof-id').innerText = "NODE-" + Math.random().toString(36).substring(7).toUpperCase();
                 render();
             }
         }
