@@ -2,209 +2,248 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CyberLibre 2008 | Smart Grid & Security</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUERVOSTORE | Future Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        /* --- ESTILO FRUTIGER AERO X MERCADO LIBRE --- */
         :root {
-            --ml-yellow: #fff159;
-            --ml-blue: #3483fa;
-            --aero-blue: #00a6ff;
-            --glass: rgba(255, 255, 255, 0.8);
+            --neon-green: #00ff88;
+            --dark-bg: #020b08;
+            --grid-color: rgba(0, 255, 136, 0.05);
         }
 
         body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            /* Fondo de burbujas clásico de los 2000s */
-            background: radial-gradient(circle at top, #81d4fa, #0277bd);
-            background-attachment: fixed;
-            min-height: 100vh;
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px;
         }
 
-        /* --- LOGIN OVERLAY --- */
-        .overlay {
-            position: fixed; inset: 0; background: rgba(0,25,50,0.7);
-            backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* Efecto de Escaneo de Video Antiguo */
+        body::before {
+            content: " ";
+            position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999; background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
 
-        .login-card {
-            background: var(--glass);
-            padding: 40px; border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3), inset 0 0 15px white;
-            border: 1px solid rgba(255,255,255,0.5);
-            text-align: center; width: 320px;
-            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .neon-border {
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), inset 0 0 15px rgba(0, 255, 136, 0.1);
         }
 
-        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* --- NAVBAR ESTILO ML --- */
-        nav {
-            background: var(--ml-yellow);
-            padding: 10px 5%;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .neon-text {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
         }
 
-        .logo { font-size: 1.8rem; font-weight: bold; color: #333; font-italic: italic; }
-        .logo span { color: var(--ml-blue); }
-
-        /* --- LAYOUT --- */
-        main {
-            display: grid; grid-template-columns: 1fr 350px;
-            gap: 25px; padding: 30px 5%;
+        /* Animación de entrada */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
 
-        /* --- CARDS TIPO MERCADO LIBRE --- */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        
-        .card {
-            background: white; border-radius: 12px; overflow: hidden;
-            transition: 0.3s; border: 1px solid #eee; cursor: pointer;
+        .glitch:hover { animation: glitch 0.3s infinite; }
+
+        /* Estilo de los botones futuristas */
+        .btn-cyber {
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-
-        .card-img {
-            height: 180px; background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
-            display: flex; align-items: center; justify-content: center; font-size: 4rem;
-        }
-
-        .card-body { padding: 15px; }
-        .price { font-size: 1.5rem; font-weight: 500; margin: 5px 0; }
-        
-        /* --- BOTONES GLOSSY --- */
-        .btn-buy {
-            background: linear-gradient(to bottom, #54a0ff, #2e86de);
-            color: white; border: none; padding: 12px; width: 100%;
-            border-radius: 8px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 0 #1b62ab; transition: 0.1s;
-        }
-
-        .btn-buy:active { transform: translateY(4px); box-shadow: none; }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            background: var(--glass); border-radius: 15px; padding: 20px;
-            height: fit-content; border: 1px solid white;
+        .btn-cyber:hover {
+            background: var(--neon-green);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-green);
         }
 
         .hidden { display: none !important; }
-        input { width: 90%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #020b08; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-green); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="overlay">
-        <div class="login-card">
-            <div style="font-size: 3rem;">🛡️</div>
-            <h2 style="color: #003366;">CyberLibre Access</h2>
-            <p style="font-size: 0.8rem; color: #555;">Operator: <b>admin</b> | Pin: <b>123</b></p>
-            <input type="text" id="user" placeholder="Operador ID">
-            <input type="password" id="pass" placeholder="Security Password">
-            <button onclick="handleLogin()" class="btn-buy">INITIALIZE SESSION</button>
+    <div id="login-screen" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#020b08]">
+        <div class="p-8 neon-border bg-black/80 max-w-md w-full text-center relative">
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 text-5xl">🦅</div>
+            <h1 class="orbitron text-3xl mb-2 neon-text">SYSTEM ACCESS</h1>
+            <p class="text-xs tracking-[0.3em] mb-8 text-gray-500">ENCRYPTED CONNECTION REQUIRED</p>
+            <div class="space-y-4">
+                <input type="text" id="user" placeholder="OPERATOR_ID" class="w-full bg-transparent border border-green-900 p-3 outline-none focus:border-green-400 text-green-400">
+                <input type="password" id="pass" placeholder="ACCESS_CODE" class="w-full bg-transparent border border-green-900 p-3 outline-none focus:border-green-400 text-green-400">
+                <button onclick="handleLogin()" class="btn-cyber w-full py-3 orbitron font-bold">INITIATE BOOT_SEQUENCE</button>
+            </div>
+            <p class="mt-4 text-[10px] text-gray-600 italic">Hint: admin / 123</p>
         </div>
     </div>
 
-    <div id="app" class="hidden">
-        <nav>
-            <div class="logo">Cyber<span>Libre</span></div>
-            <div style="display:flex; align-items:center; gap:20px;">
-                <span id="welcome"></span>
-                <button onclick="handleLogout()" style="background:none; border:none; color: #3483fa; cursor:pointer;">Cerrar sesión</button>
+    <div id="app" class="hidden min-h-screen flex flex-col">
+        <header class="border-b border-green-900 p-4 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-50">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🦅</span>
+                <span class="orbitron font-bold text-xl tracking-tighter neon-text">CUERVO<span class="text-white">STORE</span></span>
             </div>
-        </nav>
+            <div class="flex items-center gap-6">
+                <span id="op-name" class="text-[10px] orbitron text-green-700">OP_STATUS: ONLINE</span>
+                <button onclick="handleLogout()" class="text-xs hover:text-red-500 transition">TERMINATE_SESSION</button>
+            </div>
+        </header>
 
-        <main>
-            <div class="products-grid" id="lista-productos"></div>
-            
-            <aside class="sidebar">
-                <h3 style="border-bottom: 2px solid var(--ml-blue); padding-bottom: 10px;">Carrito de Red</h3>
-                <div id="items-carrito" style="margin: 20px 0;"></div>
-                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size: 1.2rem;">
-                    <span>Total:</span>
-                    <span id="total-precio">$0</span>
+        <section class="relative h-[40vh] overflow-hidden border-b border-green-900 flex items-center justify-center">
+            <div class="absolute inset-0 opacity-20 pointer-events-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#020b08] to-transparent"></div>
+            </div>
+            <div class="text-center z-10 px-4">
+                <p class="text-[10px] orbitron tracking-[0.5em] text-green-500 mb-2 animate-pulse">EL MARKETPLACE DEL FUTURO YA LLEGÓ</p>
+                <h2 class="orbitron text-6xl font-black mb-4 glitch">CUERVOSTORE</h2>
+                <div class="flex gap-4 justify-center">
+                    <button class="btn-cyber px-8 py-2 text-xs orbitron">EXPLORAR_DB</button>
+                    <button class="btn-cyber px-8 py-2 text-xs orbitron">VENDER_MODS</button>
                 </div>
-                <button onclick="finalizarCompra()" class="btn-buy" style="margin-top:20px; background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449;">CONTRATAR AHORA</button>
+            </div>
+        </section>
+
+        <main class="flex-grow p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-3">
+                <h3 class="orbitron text-sm mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500"></span> ARTÍCULOS_DISPONIBLES
+                </h3>
+                <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    </div>
+            </div>
+
+            <aside class="relative">
+                <div class="sticky top-24 neon-border p-6 bg-green-950/10 backdrop-blur-md">
+                    <h3 class="orbitron text-sm mb-6 text-center border-b border-green-900 pb-2">MANIFIESTO_CARGA</h3>
+                    <div id="items-carrito" class="space-y-4 mb-6 max-h-[40vh] overflow-y-auto">
+                        </div>
+                    <div class="border-t border-green-900 pt-4 space-y-2">
+                        <div class="flex justify-between text-xs orbitron">
+                            <span>SUBTOTAL</span>
+                            <span id="total-precio">$0</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-green-700 uppercase">
+                            <span>Tax_Crypto</span>
+                            <span>2.5%</span>
+                        </div>
+                        <button onclick="finalizarCompra()" class="btn-cyber w-full py-4 mt-4 orbitron font-bold">EJECUTAR_TRANSACCIÓN</button>
+                    </div>
+                </div>
             </aside>
         </main>
+
+        <footer class="border-t border-green-900 p-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div><p class="text-2xl orbitron neon-text">6</p><p class="text-[10px] text-gray-500">PRODUCTOS</p></div>
+            <div><p class="text-2xl orbitron neon-text">3</p><p class="text-[10px] text-gray-500">NODOS_ACTIVOS</p></div>
+            <div><p class="text-2xl orbitron neon-text">0</p><p class="text-[10px] text-gray-500">FUGAS_DATA</p></div>
+            <div><p class="text-2xl orbitron neon-text">100%</p><p class="text-[10px] text-gray-500">ENCRIPTADO</p></div>
+        </footer>
     </div>
 
     <script>
         const productos = [
-            { id: 1, name: "SmartGrid Sentinel AI", price: 15499, img: "📡" },
-            { id: 2, name: "Quantum Firewall X800", price: 8900, img: "🛡️" },
-            { id: 3, name: "Sniffer de Red Industrial", price: 4200, img: "🔍" },
-            { id: 4, name: "Nodo Seguro IoT", price: 1500, img: "🔗" },
-            { id: 5, name: "Data Vault Pro 2026", price: 12300, img: "🗄️" }
+            { id: 1, name: "Neural Link v2.1", price: 45000, img: "🧠", desc: "Interfaz cerebro-maquina directa." },
+            { id: 2, name: "Ghost Deck Laptop", price: 12800, img: "💻", desc: "Hardware indetectable por satélites." },
+            { id: 3, name: "ICE-Breaker Toolkit", price: 5600, img: "🔓", desc: "bypass de seguridad SmartGrid." },
+            { id: 4, name: "Medic-Gel Nanobots", price: 2300, img: "💉", desc: "Reparación celular instantánea." },
+            { id: 5, name: "Encrypted Bio-Chip", price: 9900, img: "💾", desc: "Almacenamiento de identidad offline." },
+            { id: 6, name: "Drone Cuervo-9", price: 34000, img: "🛸", desc: "Vigilancia stealth con IA." }
         ];
 
-        let carrito = JSON.parse(localStorage.getItem('cart')) || [];
+        let carrito = JSON.parse(localStorage.getItem('cuervo_cart')) || [];
 
         function handleLogin() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
             if(u === 'admin' && p === '123') {
-                localStorage.setItem('session', 'active');
+                localStorage.setItem('cuervo_auth', 'true');
                 init();
-            } else { alert("Acceso denegado, carnal"); }
+            } else {
+                alert("ACCESS_DENIED: Invalid Credentials");
+            }
         }
 
         function handleLogout() {
-            localStorage.removeItem('session');
+            localStorage.removeItem('cuervo_auth');
             location.reload();
         }
 
         function init() {
-            if(localStorage.getItem('session')) {
+            if(localStorage.getItem('cuervo_auth')) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
-                renderProds();
-                renderCart();
+                render();
             }
         }
 
-        function renderProds() {
+        function render() {
             const grid = document.getElementById('lista-productos');
             grid.innerHTML = productos.map(p => `
-                <div class="card">
-                    <div class="card-img">${p.img}</div>
-                    <div class="card-body">
-                        <div class="price">$${p.price.toLocaleString()}</div>
-                        <div style="color:#333; margin-bottom:10px;">${p.name}</div>
-                        <p style="font-size:0.7rem; color: #00a650; font-weight:bold;">Envío gratis Full ⚡</p>
-                        <button onclick="addToCart(${p.id})" class="btn-buy" style="font-size:0.8rem; padding:8px;">Agregar al carrito</button>
+                <div class="neon-border p-6 bg-black/40 hover:bg-green-500/5 transition-all group">
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">${p.img}</div>
+                    <h4 class="orbitron text-lg neon-text mb-1">${p.name}</h4>
+                    <p class="text-xs text-gray-500 mb-4 h-8">${p.desc}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="orbitron font-bold">$${p.price.toLocaleString()}</span>
+                        <button onclick="addToCart(${p.id})" class="btn-cyber px-4 py-1 text-[10px] orbitron">ADQUIRIR</button>
                     </div>
                 </div>
             `).join('');
+            updateCart();
         }
 
         function addToCart(id) {
             const p = productos.find(x => x.id === id);
             carrito.push(p);
-            localStorage.setItem('cart', JSON.stringify(carrito));
-            renderCart();
+            localStorage.setItem('cuervo_cart', JSON.stringify(carrito));
+            updateCart();
         }
 
-        function renderCart() {
+        function updateCart() {
             const list = document.getElementById('items-carrito');
-            list.innerHTML = carrito.map(i => `
-                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; border-bottom:1px solid #eee;">
-                    <span>${i.name}</span>
-                    <b>$${i.price}</b>
+            const totalDisplay = document.getElementById('total-precio');
+            
+            list.innerHTML = carrito.map((item, idx) => `
+                <div class="flex justify-between text-xs border-l-2 border-green-500 pl-2 py-1 bg-green-500/5">
+                    <div>
+                        <p class="font-bold">${item.name}</p>
+                        <p class="text-[9px] text-green-700">#IDX_0${idx}</p>
+                    </div>
+                    <span class="orbitron">$${item.price}</span>
                 </div>
             `).join('');
+
             const total = carrito.reduce((s, i) => s + i.price, 0);
-            document.getElementById('total-precio').innerText = `$${total.toLocaleString()}`;
+            totalDisplay.innerText = `$${total.toLocaleString()}`;
         }
 
         function finalizarCompra() {
-            if(carrito.length === 0) return alert("Carrito vacío");
-            alert("¡Despliegue de red exitoso!");
+            if(carrito.length === 0) return alert("NO_DATA_TO_PROCESS");
+            alert("TRANSACTION_COMPLETE: Assets deployed to your location.");
             carrito = [];
-            localStorage.removeItem('cart');
-            renderCart();
+            localStorage.removeItem('cuervo_cart');
+            updateCart();
         }
 
         init();
