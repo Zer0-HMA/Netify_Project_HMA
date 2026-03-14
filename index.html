@@ -3,62 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prototipo Carrito - Shop Express</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen">
+    <title>CyberCore Solutions - Smart Grid & Security (v0.8 Beta)</title>
+    <style>
+        /* --- ESTILOS FRUTIGER AERO - 2008 VIBES --- */
+        :root {
+            --vista-blue: #0078D7;
+            --vista-green: #339933;
+            --glossy-overlay: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%);
+            --aeroglass: rgba(255, 255, 255, 0.5);
+        }
 
-    <div id="login-screen" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-96">
-            <h2 class="text-2xl font-bold mb-4 text-center">Bienvenido</h2>
-            <p class="text-sm text-gray-600 mb-6 text-center">Usa: <b>admin</b> / <b>123</b></p>
-            <input type="text" id="user" placeholder="Usuario" class="w-full p-2 mb-4 border rounded">
-            <input type="password" id="pass" placeholder="Contraseña" class="w-full p-2 mb-6 border rounded">
-            <button onclick="handleLogin()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Entrar</button>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Fondo de burbujas/agua clásico */
+            background: rgb(0,120,215);
+            background: radial-gradient(circle, rgba(0,120,215,1) 0%, rgba(10,40,90,1) 100%);
+            background-attachment: fixed;
+            color: #333;
+            min-h-screen: 100vh;
+        }
+
+        /* Efecto Vidrio / Glassmorphism de la época */
+        .aero-container {
+            background: var(--aeroglass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Botones Glossy */
+        .btn-glossy {
+            background: linear-gradient(180deg, #66ccff 0%, #0078D7 50%, #005a9e 100%);
+            border: 1px solid #005a9e;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 5px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .btn-glossy:hover {
+            background: linear-gradient(180deg, #88ddff 0%, #0088ee 50%, #0066bb 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-glossy::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 50%;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* inputs Estilo Vista */
+        input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #999;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--vista-blue);
+            box-shadow: 0 0 5px rgba(0,120,215,0.5);
+        }
+
+        /* --- LAYOUT --- */
+        #login-screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: flex; items-center: center; justify-content: center; z-index: 100;
+        }
+
+        .login-box {
+            width: 350px; padding: 30px;
+            text-align: center;
+        }
+
+        .hidden { display: none !important; }
+
+        header {
+            background: linear-gradient(180deg, rgba(0,120,215,0.8) 0%, rgba(0,60,120,0.8) 100%);
+            color: white; padding: 15px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        main {
+            padding: 30px;
+            display: grid; grid-template-columns: 2fr 1fr; gap: 30px;
+        }
+
+        @media (max-width: 768px) { main { grid-template-columns: 1fr; } }
+
+        /* --- PRODUCTOS --- */
+        #lista-productos {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;
+        }
+
+        .product-card {
+            padding: 20px; text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.9) 100%);
+        }
+
+        .product-icon { font-size: 50px; margin-bottom: 10px; color: var(--vista-blue); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .product-price { color: var(--vista-green); font-weight: bold; font-size: 1.2em; margin: 10px 0; }
+
+        /* --- CARRITO --- */
+        .cart-box {
+            padding: 20px;
+        }
+
+        .cart-header { border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 15px; }
+        .cart-item {
+            display: flex; justify-content: space-between; font-size: 0.9em;
+            margin-bottom: 8px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 4px;
+        }
+        .total-row {
+            margin-top: 20px; border-top: 2px solid #ccc; padding-top: 15px;
+            display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="aero-container">
+        <div class="login-box aero-container" style="background: rgba(255,255,255,0.8);">
+            <div class="product-icon">🌐</div>
+            <h2 style="color: var(--vista-blue); text-shadow: 0 1px 1px white;">CyberCore Access</h2>
+            <p style="font-size: 0.8em; color: #666; margin-bottom: 20px;">Use: <b>admin</b> / <b>123</b></p>
+            <input type="text" id="user" placeholder="Network Operator ID" style="width: 80%; margin-bottom: 15px;"><br>
+            <input type="password" id="pass" placeholder="Security Token" style="width: 80%; margin-bottom: 25px;"><br>
+            <button onclick="handleLogin()" class="btn-glossy" style="width: 85%;">INITIALIZE SESSION</button>
         </div>
     </div>
 
     <div id="app" class="hidden">
-        <nav class="bg-blue-600 p-4 text-white flex justify-between items-center shadow-md">
-            <h1 class="text-xl font-bold">🛒 RapidShop Pro</h1>
-            <button onclick="handleLogout()" class="bg-red-500 px-3 py-1 rounded text-sm">Cerrar Sesión</button>
-        </nav>
+        <header class="aero-container">
+            <h1 style="margin: 0; font-size: 1.5em; text-shadow: 0 2px 3px rgba(0,0,0,0.4);">
+                📡 CyberCore <span style="font-weight: 300; font-size: 0.8em;">SmartGrid Solutions</span>
+            </h1>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 0.9em;">Operator: admin</span>
+                <button onclick="handleLogout()" class="btn-glossy" style="background: linear-gradient(180deg, #ff9999 0%, #cc0000 50%, #990000 100%); border-color: #990000; padding: 5px 10px; font-size: 0.8em;">LOGOUT</button>
+            </div>
+        </header>
 
-        <main class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4" id="lista-productos">
-                </div>
-
-            <div class="bg-white p-6 rounded-lg shadow-md h-fit">
-                <h2 class="text-xl font-bold mb-4 border-b pb-2">Tu Carrito</h2>
-                <div id="items-carrito" class="space-y-3 mb-4">
+        <main>
+            <section>
+                <h3 style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin-top: 0;">Advanced Network Modules</h3>
+                <div id="lista-productos">
                     </div>
-                <div class="border-t pt-4 font-bold text-lg flex justify-between">
-                    <span>Total:</span>
+            </section>
+
+            <aside class="cart-box aero-container">
+                <div class="cart-header">
+                    <h3 style="margin: 0; color: var(--vista-blue);">Deployment Queue</h3>
+                </div>
+                <div id="items-carrito">
+                    </div>
+                <div class="total-row">
+                    <span>Subtotal:</span>
                     <span id="total-precio">$0</span>
                 </div>
-                <button onclick="finalizarCompra()" class="w-full mt-6 bg-green-500 text-white py-2 rounded hover:bg-green-600">Pagar Ahora</button>
-            </div>
+                <button onclick="finalizarCompra()" class="btn-glossy" style="width: 100%; margin-top: 20px; background: linear-gradient(180deg, #99ff99 0%, #339933 50%, #227722 100%); border-color: #227722;">DEPLOY SOLUTIONS</button>
+            </aside>
         </main>
     </div>
 
     <script>
+        // --- CATÁLOGO DE CIBERSEGURIDAD Y REDES ---
         const productos = [
-            { id: 1, name: "Tenis Galácticos", price: 1200, img: "👟" },
-            { id: 2, name: "Sudadera Hacker", price: 850, img: "🧥" },
-            { id: 3, name: "Gorra Prototipo", price: 300, img: "🧢" },
-            { id: 4, name: "Reloj Quantum", price: 2500, img: "⌚" },
+            { id: 1, name: "SmartGrid Sentinel AI", price: 15000, img: "📡", desc: "Monitoreo predictivo de subestaciones." },
+            { id: 2, name: "Quantum Firewall X800", price: 8500, img: "🛡️", desc: "Protección perimetral de grado militar." },
+            { id: 3, name: "IoT Threat Scanner", price: 3200, img: "🔍", desc: "Auditoría de vulnerabilidades en dispositivos." },
+            { id: 4, name: "Secure Node Link", price: 1200, img: "🔗", desc: "Encriptación de punto a punto para nodos." },
+            { id: 5, name: "Data Historian Vault", price: 5400, img: "🗄️", desc: "Almacenamiento seguro de logs operativos." },
         ];
 
         let carrito = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // --- AUTH LOGIC ---
+        // --- AUTH LOGIC (localStorage) ---
         function handleLogin() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
             if(u === 'admin' && p === '123') {
                 localStorage.setItem('isAuth', 'true');
                 checkAuth();
-            } else { alert('Datos incorrectos, carnal'); }
+            } else { alert('ACCESS DENIED. Check credentials.'); }
         }
 
         function handleLogout() {
@@ -74,7 +216,7 @@
             }
         }
 
-        // --- CARRITO LOGIC ---
+        // --- CARRITO LOGIC (Client-Side State) ---
         function addToCart(id) {
             const prod = productos.find(p => p.id === id);
             carrito.push(prod);
@@ -85,11 +227,12 @@
         function renderAll() {
             const container = document.getElementById('lista-productos');
             container.innerHTML = productos.map(p => `
-                <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
-                    <div class="text-4xl mb-2">${p.img}</div>
-                    <h3 class="font-bold">${p.name}</h3>
-                    <p class="text-gray-500">$${p.price}</p>
-                    <button onclick="addToCart(${p.id})" class="mt-3 w-full bg-blue-100 text-blue-700 py-1 rounded font-semibold hover:bg-blue-200">Agregar</button>
+                <div class="product-card aero-container">
+                    <div class="product-icon">${p.img}</div>
+                    <h4 style="margin: 0; color: #000;">${p.name}</h4>
+                    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">${p.desc}</p>
+                    <div class="product-price">$${p.price.toLocaleString()}</div>
+                    <button onclick="addToCart(${p.id})" class="btn-glossy" style="width: 100%; font-size: 0.9em;">Add to Queue</button>
                 </div>
             `).join('');
             renderCarrito();
@@ -100,28 +243,29 @@
             const totalElement = document.getElementById('total-precio');
             
             if(carrito.length === 0) {
-                cartContainer.innerHTML = '<p class="text-gray-400 text-sm">El carrito está vacío</p>';
+                cartContainer.innerHTML = '<p style="color: #999; text-align: center; font-style: italic; font-size: 0.8em;">Deployment queue empty...</p>';
             } else {
-                cartContainer.innerHTML = carrito.map((item, index) => `
-                    <div class="flex justify-between text-sm italic">
+                cartContainer.innerHTML = carrito.map((item) => `
+                    <div class="cart-item">
                         <span>${item.name}</span>
-                        <span class="font-bold">$${item.price}</span>
+                        <span style="font-weight: bold; color: var(--vista-green);">$${item.price.toLocaleString()}</span>
                     </div>
                 `).join('');
             }
 
             const total = carrito.reduce((acc, item) => acc + item.price, 0);
-            totalElement.innerText = `$${total}`;
+            totalElement.innerText = `$${total.toLocaleString()}`;
         }
 
         function finalizarCompra() {
-            alert("¡Compra exitosa! Se vaciará el estado del cliente.");
+            if(carrito.length === 0) return alert("Queue is empty.");
+            alert("PROCESSING DEPLOYMENT... Simulating Client-Side state reset.");
             carrito = [];
             localStorage.removeItem('cart');
             renderCarrito();
         }
 
-        // Iniciar app
+        // Iniciar
         checkAuth();
     </script>
 </body>
