@@ -3,225 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRIKI-VAULT | Ultimate Gaming Store</title>
+    <title>FRIKI-VAULT ULTRA | 50+ Items</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
     <style>
-        :root { --neon-purple: #9d00ff; --neon-cyan: #00f2ff; --dark-surface: #0a0a0f; }
-        
+        :root { --neon-cyan: #00f2ff; --neon-purple: #9d00ff; }
         body { 
             background: #050505; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
-            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), radial-gradient(circle at top, #1a1a2e 0%, #050505 100%);
+            background-image: radial-gradient(circle at top, #1a1a2e 0%, #050505 100%);
             background-attachment: fixed;
         }
-
         .audiowide { font-family: 'Audiowide', cursive; }
-
-        /* Efecto RGB en bordes */
-        .glow-border {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.4s;
-        }
-        .glow-border:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-        }
-
-        /* Scrollbar Personalizada */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
-
-        .glass-nav { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        .search-input {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.3s;
-        }
-        .search-input:focus { border-color: var(--neon-cyan); background: rgba(255,255,255,0.07); }
-
-        input, select, textarea {
-            background: rgba(255,255,255,0.05); border: 1px solid #333;
-            padding: 12px; color: white; outline: none; border-radius: 8px;
-        }
-
+        .glow-border { border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
+        .glow-border:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         .hidden { display: none !important; }
-        
-        @keyframes pulse-cyan {
-            0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
-        }
-        .btn-buy { animation: pulse-cyan 2s infinite; }
+        input, select, textarea { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 10px; color: white; outline: none; border-radius: 8px; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="fixed inset-0 z-[10000] flex items-center justify-center bg-black">
-        <div class="p-10 glow-border bg-[#0a0a0f] max-w-md w-full rounded-2xl animate__animated animate__zoomIn">
-            <h1 class="audiowide text-4xl text-center mb-1 text-white">FRIKI-<span class="text-cyan-400">VAULT</span></h1>
-            <p class="text-center text-[10px] text-gray-500 mb-8 tracking-[0.4em]">ACCESO_SISTEMA_GEEK</p>
-            <div class="space-y-4">
-                <input type="text" id="username" placeholder="OPERADOR_ID" class="w-full">
-                <input type="password" id="password" placeholder="PASSWORD_KEY" class="w-full">
-                <button onclick="login()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-lg font-bold uppercase tracking-widest hover:brightness-125 transition">Iniciar Conexión</button>
-                <button onclick="register()" class="w-full text-xs text-gray-500 hover:text-white transition">No tengo cuenta / Registrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="app" class="hidden min-h-screen flex flex-col">
-        <header class="glass-nav sticky top-0 z-50">
-            <div class="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
-                <div class="audiowide text-2xl flex items-center gap-2 cursor-pointer" onclick="location.reload()">
-                    <i data-lucide="cpu" class="text-cyan-400"></i> FV<span class="text-cyan-400">PRO</span>
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10 p-4">
+            <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
+                <div class="audiowide text-2xl text-cyan-400 flex items-center gap-2">
+                    <i data-lucide="zap"></i> FV-ULTRA
                 </div>
-
-                <div class="relative w-full md:w-96">
-                    <i data-lucide="search" class="absolute left-3 top-3.5 text-gray-500 w-5 h-5"></i>
-                    <input type="text" id="main-search" onkeyup="searchProds()" placeholder="Buscar hardware, ropa, juegos..." class="search-input w-full pl-10 rounded-full py-2.5 text-sm">
+                <div class="relative flex-grow max-w-md">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
+                    <input type="text" id="search-bar" onkeyup="filtrarTodo()" placeholder="Buscar entre 50+ artículos..." class="w-full pl-10 py-2 rounded-full text-sm">
                 </div>
-
-                <nav class="flex gap-6 items-center">
-                    <button onclick="switchTab('tienda')" class="hover:text-cyan-400 transition font-bold text-sm">TIENDA</button>
-                    <button onclick="switchTab('vender')" class="hover:text-cyan-400 transition font-bold text-sm">VENDER</button>
-                    <button onclick="logout()" class="text-red-500"><i data-lucide="log-out"></i></button>
+                <nav class="flex gap-4">
+                    <button onclick="switchTab('tienda')" class="text-xs font-bold hover:text-cyan-400">TIENDA</button>
+                    <button onclick="switchTab('vender')" class="text-xs font-bold hover:text-cyan-400">VENDER</button>
                 </nav>
             </div>
         </header>
 
-        <main class="container mx-auto px-6 py-8 flex-grow">
-            <section id="tab-tienda" class="tab-content animate__animated animate__fadeIn">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <aside class="space-y-6">
-                        <div class="p-6 glow-border bg-white/5 rounded-xl">
-                            <h3 class="audiowide text-xs mb-4 text-cyan-400">CATEGORÍAS</h3>
-                            <div id="category-filters" class="space-y-3 text-sm">
-                                <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-cyan-400"> PC Gamer</label>
-                                <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-cyan-400"> Ropa Friki</label>
-                                <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-cyan-400"> Juegos</label>
-                            </div>
-                        </div>
-                        <div class="p-6 glow-border bg-cyan-900/10 rounded-xl">
-                            <h3 class="audiowide text-xs mb-4 flex items-center gap-2"><i data-lucide="shopping-cart" class="w-4"></i> CARRITO</h3>
-                            <div id="cart-list" class="space-y-3 mb-4 text-[11px]"></div>
-                            <div class="border-t border-white/10 pt-4 flex justify-between font-bold">
-                                <span>TOTAL:</span>
-                                <span id="cart-total" class="text-cyan-400">$0</span>
-                            </div>
-                            <button onclick="checkout()" class="w-full btn-buy bg-cyan-500 py-3 mt-4 rounded-lg font-bold text-black text-xs uppercase">Confirmar Orden</button>
-                        </div>
-                    </aside>
-
-                    <div id="market-grid" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        </div>
-                </div>
-            </section>
-
-            <section id="tab-vender" class="tab-content hidden max-w-4xl mx-auto animate__animated animate__fadeIn">
-                <div class="p-8 glow-border bg-white/5 rounded-2xl">
-                    <h2 class="audiowide text-2xl mb-8 text-center neon-text">CARGAR PRODUCTO A LA VAULT</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-4">
-                            <input type="text" id="p-name" placeholder="Nombre del artículo" class="w-full">
-                            <input type="number" id="p-price" placeholder="Precio ($)" class="w-full">
-                            <select id="p-cat" class="w-full">
-                                <option value="PC Gamer">PC Gamer / Hardware</option>
-                                <option value="Ropa Friki">Ropa Friki</option>
-                                <option value="Juegos">Videojuegos</option>
-                            </select>
-                            <textarea id="p-desc" placeholder="Descripción corta..." class="w-full h-32"></textarea>
-                        </div>
-                        <div class="space-y-4">
-                            <label class="block text-sm text-gray-500">Imagen del Producto (JPG/PNG)</label>
-                            <div onclick="document.getElementById('p-file').click()" class="border-2 border-dashed border-gray-700 h-48 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-cyan-400 transition" id="drop-zone">
-                                <i data-lucide="image-plus" class="w-12 h-12 text-gray-600 mb-2"></i>
-                                <span class="text-xs text-gray-500">Haz clic para subir desde PC</span>
-                                <input type="file" id="p-file" class="hidden" accept="image/*" onchange="previewImg(this)">
-                            </div>
-                            <div id="preview-container" class="hidden h-40 rounded-xl overflow-hidden border border-cyan-500">
-                                <img id="img-preview" src="#" class="w-full h-full object-cover">
-                            </div>
-                        </div>
+        <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="space-y-6">
+                <div class="p-6 glow-border bg-white/5 rounded-2xl">
+                    <h3 class="audiowide text-xs mb-4 text-cyan-400 uppercase">Filtrar Categoría</h3>
+                    <div class="space-y-3" id="filter-container">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="PC Gamer" checked onchange="filtrarTodo()" class="accent-cyan-400"> PC Gamer / Hardware
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="Ropa Friki" checked onchange="filtrarTodo()" class="accent-cyan-400"> Ropa Friki
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="Juegos" checked onchange="filtrarTodo()" class="accent-cyan-400"> Videojuegos
+                        </label>
                     </div>
-                    <button onclick="uploadProduct()" class="w-full mt-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-xl font-bold text-lg uppercase tracking-tighter hover:scale-[1.02] transition">Sincronizar con la Tienda</button>
                 </div>
-            </section>
+
+                <div class="p-6 glow-border bg-purple-900/10 rounded-2xl">
+                    <h3 class="audiowide text-xs mb-4 flex items-center gap-2"><i data-lucide="shopping-bag"></i> CARRITO</h3>
+                    <div id="cart-items" class="text-[10px] space-y-2 mb-4 max-h-60 overflow-y-auto"></div>
+                    <div class="border-t border-white/10 pt-4 flex justify-between audiowide text-sm">
+                        <span>TOTAL:</span>
+                        <span id="cart-total" class="text-cyan-400">$0</span>
+                    </div>
+                    <button onclick="alert('Pedido enviado a la base de datos')" class="w-full py-3 mt-4 bg-cyan-500 text-black font-bold rounded-lg text-xs uppercase">Confirmar Compra</button>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-3">
+                <section id="tab-tienda" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></section>
+
+                <section id="tab-vender" class="hidden animate__animated animate__fadeIn">
+                    <div class="p-8 glow-border bg-white/5 rounded-2xl max-w-2xl mx-auto">
+                        <h2 class="audiowide text-xl mb-6 text-center">VENDER ARTÍCULO</h2>
+                        <input type="text" id="new-name" placeholder="Nombre del producto" class="w-full mb-4">
+                        <input type="number" id="new-price" placeholder="Precio ($)" class="w-full mb-4">
+                        <select id="new-cat" class="w-full mb-4">
+                            <option value="PC Gamer">PC Gamer</option>
+                            <option value="Ropa Friki">Ropa Friki</option>
+                            <option value="Juegos">Juegos</option>
+                        </select>
+                        <div class="border-2 border-dashed border-gray-700 p-6 text-center rounded-xl mb-6 cursor-pointer" onclick="document.getElementById('new-file').click()">
+                            <i data-lucide="upload-cloud" class="mx-auto mb-2"></i>
+                            <p class="text-xs text-gray-500">Subir imagen desde PC</p>
+                            <input type="file" id="new-file" class="hidden" onchange="handleFile(this)">
+                        </div>
+                        <button onclick="saveNewProduct()" class="w-full py-4 bg-purple-600 rounded-xl font-bold uppercase">Publicar Ahora</button>
+                    </div>
+                </section>
+            </div>
         </main>
     </div>
 
     <script>
-        // Lucide Icons
         lucide.createIcons();
-
-        // Datos Iniciales (Imágenes de calidad)
-        const defProds = [
-            { id: 1, name: "PC Master Race Ultra", price: 55000, cat: "PC Gamer", desc: "RTX 4090 + Watercooling Custom", img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500", owner: "System" },
-            { id: 2, name: "Sudadera 'Neo-Tokyo'", price: 1200, cat: "Ropa Friki", desc: "100% Algodón, diseño bordado neón.", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500", owner: "System" },
-            { id: 3, name: "Setup Streamer Pro", price: 8900, cat: "PC Gamer", desc: "Micrófono, Luces y Cámara 4K", img: "https://images.unsplash.com/photo-1614018424418-29592fa63d04?w=500", owner: "System" }
-        ];
-
-        if(!localStorage.getItem('f-vault-prods')) localStorage.setItem('f-vault-prods', JSON.stringify(defProds));
-        
+        let allProducts = [];
         let cart = [];
-        let base64Img = "";
+        let tempImg = "https://via.placeholder.com/300x200?text=FrikiVault";
 
-        // --- SUBIDA DE IMAGEN ---
-        function previewImg(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('img-preview').src = e.target.result;
-                    document.getElementById('preview-container').classList.remove('hidden');
-                    document.getElementById('drop-zone').classList.add('hidden');
-                    base64Img = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
+        // --- GENERADOR DE 50 ARTÍCULOS ---
+        function generateData() {
+            const cats = ["PC Gamer", "Ropa Friki", "Juegos"];
+            const hardware = ["RTX 5090", "Ryzen 9 9950X", "Monitor OLED 4K", "Teclado Mecánico RGB", "Mouse Inalámbrico", "RAM 64GB DDR5"];
+            const clothing = ["Sudadera Naruto", "Playera Zelda", "Gorra Cyberpunk", "Chaqueta Akatsuki", "Calcetines Mario"];
+            const games = ["Elden Ring DLC", "GTA VI Pre-order", "Halo Infinite", "Final Fantasy Rebirth", "Cyberpunk 2077"];
+
+            for(let i=1; i<=50; i++) {
+                let cat = cats[Math.floor(Math.random()*cats.length)];
+                let name = "";
+                if(cat === "PC Gamer") name = hardware[Math.floor(Math.random()*hardware.length)] + " #" + i;
+                else if(cat === "Ropa Friki") name = clothing[Math.floor(Math.random()*clothing.length)] + " #" + i;
+                else name = games[Math.floor(Math.random()*games.length)] + " #" + i;
+
+                allProducts.push({
+                    id: i,
+                    name: name,
+                    price: Math.floor(Math.random() * 20000) + 500,
+                    cat: cat,
+                    img: `https://picsum.photos/seed/${i+20}/400/300` // Imágenes reales aleatorias
+                });
             }
+            render(allProducts);
         }
 
-        // --- CRUD ---
-        function uploadProduct() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const cat = document.getElementById('p-cat').value;
-            const desc = document.getElementById('p-desc').value;
-            const user = localStorage.getItem('f-vault-user');
-
-            if(!name || !price || !base64Img) return alert("Faltan datos o imagen");
-
-            const prods = JSON.parse(localStorage.getItem('f-vault-prods'));
-            prods.push({ id: Date.now(), name, price, cat, desc, img: base64Img, owner: user });
-            localStorage.setItem('f-vault-prods', JSON.stringify(prods));
+        // --- FILTROS DINÁMICOS ---
+        function filtrarTodo() {
+            const searchText = document.getElementById('search-bar').value.toLowerCase();
+            const checkedCats = Array.from(document.querySelectorAll('#filter-container input:checked')).map(cb => cb.value);
             
-            alert("Sincronización Exitosa");
-            location.reload();
+            const filtered = allProducts.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchText);
+                const matchesCat = checkedCats.includes(p.cat);
+                return matchesSearch && matchesCat;
+            });
+            render(filtered);
         }
 
-        function render(filter = "") {
-            const grid = document.getElementById('market-grid');
-            const prods = JSON.parse(localStorage.getItem('f-vault-prods'));
-            
-            grid.innerHTML = prods
-                .filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
-                .map(p => `
-                <div class="glow-border bg-white/5 rounded-2xl overflow-hidden group animate__animated animate__fadeInUp">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute top-3 left-3 bg-black/70 px-3 py-1 rounded-full text-[10px] text-cyan-400 font-bold border border-cyan-400/30">${p.cat}</div>
-                    </div>
-                    <div class="p-6">
-                        <h4 class="audiowide text-lg mb-1">${p.name}</h4>
-                        <p class="text-xs text-gray-500 mb-6 h-10 overflow-hidden italic">${p.desc}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-black text-white">$${Number(p.price).toLocaleString()}</span>
-                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black p-2 rounded-lg hover:bg-cyan-400 transition">
-                                <i data-lucide="plus"></i>
-                            </button>
+        function render(products) {
+            const container = document.getElementById('tab-tienda');
+            container.innerHTML = products.map(p => `
+                <div class="glow-border bg-white/5 rounded-2xl overflow-hidden group">
+                    <div class="h-44 overflow-hidden"><img src="${p.img}" class="w-full h-full object-cover group-hover:scale-110 transition"></div>
+                    <div class="p-4">
+                        <span class="text-[9px] text-cyan-400 font-bold uppercase">${p.cat}</span>
+                        <h4 class="audiowide text-sm mt-1">${p.name}</h4>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-lg font-bold italic">$${p.price.toLocaleString()}</span>
+                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black px-3 py-1 rounded-lg hover:bg-cyan-400 transition"><i data-lucide="plus" class="w-4"></i></button>
                         </div>
                     </div>
                 </div>
@@ -229,48 +157,37 @@
             lucide.createIcons();
         }
 
-        function searchProds() {
-            const val = document.getElementById('main-search').value;
-            render(val);
+        // --- IMAGEN DESDE PC ---
+        function handleFile(input) {
+            const reader = new FileReader();
+            reader.onload = (e) => { tempImg = e.target.result; alert("Imagen cargada en memoria."); };
+            reader.readAsDataURL(input.files[0]);
         }
 
-        // --- NAVEGACIÓN Y SESSION ---
+        function saveNewProduct() {
+            const n = document.getElementById('new-name').value;
+            const p = document.getElementById('new-price').value;
+            const c = document.getElementById('new-cat').value;
+            if(!n || !p) return;
+            allProducts.unshift({ id: Date.now(), name: n, price: Number(p), cat: c, img: tempImg });
+            switchTab('tienda');
+            filtrarTodo();
+        }
+
+        // --- CARRITO ---
+        function addToCart(name, price) {
+            cart.push({name, price});
+            document.getElementById('cart-items').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
+            document.getElementById('cart-total').innerText = `$${cart.reduce((s,i)=>s+i.price, 0).toLocaleString()}`;
+        }
+
         function switchTab(id) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.getElementById('tab-'+id).classList.remove('hidden');
+            document.getElementById('tab-tienda').classList.add('hidden');
+            document.getElementById('tab-vender').classList.add('hidden');
+            document.getElementById('tab-' + id).classList.remove('hidden');
         }
 
-        function login() {
-            const u = document.getElementById('username').value;
-            if(u) { localStorage.setItem('f-vault-user', u); init(); }
-        }
-
-        function logout() { localStorage.removeItem('f-vault-user'); location.reload(); }
-
-        function addToCart(n, p) {
-            cart.push({n, p});
-            const list = document.getElementById('cart-list');
-            list.innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.n}</span><span class="text-cyan-400">$${i.p}</span></div>`).join('');
-            const total = cart.reduce((s, i) => s + i.p, 0);
-            document.getElementById('cart-total').innerText = `$${total.toLocaleString()}`;
-        }
-
-        function checkout() {
-            if(cart.length > 0) alert("ORDEN PROCESADA. ¡Disfruta tu loot!");
-            cart = [];
-            location.reload();
-        }
-
-        function init() {
-            const u = localStorage.getItem('f-vault-user');
-            if(u) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('app').classList.remove('hidden');
-                render();
-            }
-        }
-
-        init();
+        generateData();
     </script>
 </body>
 </html>
