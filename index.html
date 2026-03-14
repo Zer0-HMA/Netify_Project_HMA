@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRIKI-VAULT ULTRA | PC, Ropa & Gaming</title>
+    <title>FRIKI-VAULT ELITE | Avatar System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
@@ -18,33 +18,46 @@
         .glow-border { border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
         .glow-border:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         .hidden { display: none !important; }
-        input { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; color: white; outline: none; border-radius: 8px; width: 100%; }
+        input, select { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; color: white; outline: none; border-radius: 8px; width: 100%; }
         .btn-primary { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.3s; }
         .btn-primary:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .avatar-opt { cursor: pointer; border: 2px solid transparent; border-radius: 50%; transition: 0.3s; }
+        .avatar-selected { border-color: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); transform: scale(1.1); }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95">
-        <div class="p-10 glow-border bg-[#0a0a0f] max-w-md w-full rounded-2xl">
+        <div class="p-8 glow-border bg-[#0a0a0f] max-w-md w-full rounded-2xl animate-fade-in">
+            
             <div id="login-box">
-                <h1 class="audiowide text-3xl mb-2 text-center">SYSTEM <span class="text-cyan-400">ACCESS</span></h1>
-                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">RETROWAVE_SECURITY_PROTOCOL</p>
+                <h1 class="audiowide text-3xl mb-1 text-center">SYSTEM <span class="text-cyan-400">ACCESS</span></h1>
+                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">ENTER_MAIL_OR_USERID</p>
                 <div class="space-y-4">
-                    <input type="text" id="login-user" placeholder="SYS_OPERATOR">
+                    <input type="text" id="login-ident" placeholder="CORREO O USUARIO">
                     <input type="password" id="login-pass" placeholder="ACCESS_KEY">
                     <button onclick="login()" class="btn-primary w-full uppercase">Boot Sequence</button>
-                    <p class="text-center text-xs mt-4">¿No tienes acceso? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:underline">Crear Cuenta</a></p>
+                    <p class="text-center text-xs mt-4">¿Nuevo operador? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:underline">Registrar Módulo</a></p>
                 </div>
             </div>
+
             <div id="register-box" class="hidden">
-                <h1 class="audiowide text-3xl mb-2 text-center text-purple-500">NEW <span class="text-white">OPERATOR</span></h1>
-                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">ENROLL_SYSTEM_DATABASE</p>
-                <div class="space-y-4">
-                    <input type="text" id="reg-user" placeholder="CHOOSE_OPERATOR_ID">
-                    <input type="password" id="reg-pass" placeholder="SET_ACCESS_KEY">
-                    <button onclick="register()" class="btn-primary w-full uppercase" style="background: var(--neon-purple)">Register ID</button>
-                    <p class="text-center text-xs mt-4">¿Ya tienes cuenta? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:underline">Ir al Login</a></p>
+                <h1 class="audiowide text-2xl mb-1 text-center">CREATE <span class="text-purple-500">PROFILE</span></h1>
+                <p class="text-[10px] text-gray-500 mb-6 text-center tracking-[0.4em]">CHOOSE_YOUR_AVATAR</p>
+                
+                <div class="flex justify-center gap-4 mb-6" id="avatar-selector">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Felix')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Aneka')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Spooky" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Spooky')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Jack')">
+                </div>
+
+                <div class="space-y-3">
+                    <input type="text" id="reg-user" placeholder="NOMBRE DE USUARIO">
+                    <input type="email" id="reg-mail" placeholder="CORREO ELECTRÓNICO">
+                    <input type="password" id="reg-pass" placeholder="PASSWORD_KEY">
+                    <button onclick="register()" class="btn-primary w-full uppercase">Link Profile</button>
+                    <p class="text-center text-xs mt-3"><a href="#" onclick="toggleAuth()" class="text-gray-500 hover:text-white">Regresar</a></p>
                 </div>
             </div>
         </div>
@@ -53,44 +66,53 @@
     <div id="app" class="hidden min-h-screen flex flex-col">
         <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10 p-4">
             <div class="container mx-auto flex justify-between items-center">
-                <div class="audiowide text-2xl text-cyan-400">FV-ULTRA</div>
-                <div class="relative flex-grow max-w-md mx-4">
-                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-400 w-4 h-4"></i>
-                    <input type="text" id="search-bar" onkeyup="filtrarTodo()" placeholder="Buscar entre 50+ artículos..." class="pl-10 py-2 rounded-full text-sm">
+                <div class="flex items-center gap-4">
+                    <img id="user-avatar" src="" class="w-10 h-10 rounded-full border border-cyan-400">
+                    <div>
+                        <p class="audiowide text-xs text-cyan-400" id="display-name"></p>
+                        <p class="text-[9px] text-gray-500" id="display-mail"></p>
+                    </div>
                 </div>
-                <button onclick="logout()" class="text-red-500"><i data-lucide="log-out"></i></button>
+                <div class="relative flex-grow max-w-xs mx-4">
+                    <i data-lucide="search" class="absolute left-3 top-2 text-gray-500 w-4 h-4"></i>
+                    <input type="text" id="search-bar" onkeyup="filtrar()" placeholder="Buscar..." class="pl-9 py-1 text-xs">
+                </div>
+                <button onclick="logout()" class="text-red-500"><i data-lucide="power"></i></button>
             </div>
         </header>
 
-        <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <aside class="space-y-6">
-                <div class="p-6 glow-border bg-white/5 rounded-2xl">
-                    <h3 class="audiowide text-xs mb-4 text-cyan-400">CATEGORÍAS</h3>
-                    <div class="space-y-3" id="filter-container">
-                        <label class="flex items-center gap-2"><input type="checkbox" value="PC Gamer" checked onchange="filtrarTodo()" class="accent-cyan-400"> Hardware / PC</label>
-                        <label class="flex items-center gap-2"><input type="checkbox" value="Ropa Friki" checked onchange="filtrarTodo()" class="accent-cyan-400"> Ropa Geek</label>
-                        <label class="flex items-center gap-2"><input type="checkbox" value="Juegos" checked onchange="filtrarTodo()" class="accent-cyan-400"> Videojuegos</label>
+        <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <aside class="space-y-4">
+                <div class="p-4 glow-border bg-white/5 rounded-xl">
+                    <h3 class="audiowide text-[10px] mb-3 text-cyan-400">FILTROS</h3>
+                    <div class="space-y-2 text-xs" id="filter-container">
+                        <label class="flex items-center gap-2"><input type="checkbox" value="PC Gamer" checked onchange="filtrar()" class="accent-cyan-400"> Hardware</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" value="Ropa Friki" checked onchange="filtrar()" class="accent-cyan-400"> Ropa Geek</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" value="Juegos" checked onchange="filtrar()" class="accent-cyan-400"> Juegos</label>
                     </div>
                 </div>
-                <div class="p-6 glow-border bg-cyan-900/10 rounded-2xl">
-                    <h3 class="audiowide text-xs mb-2 italic">CARRITO DE RED</h3>
-                    <div id="cart-list" class="text-[10px] space-y-1 mb-4"></div>
-                    <div class="flex justify-between font-bold text-cyan-400 border-t border-white/10 pt-2">
-                        <span>TOTAL:</span><span id="cart-total">$0 MXN</span>
-                    </div>
+                <div class="p-4 glow-border bg-cyan-900/10 rounded-xl">
+                    <h3 class="audiowide text-[10px] mb-2">CARRITO DE RED</h3>
+                    <div id="cart-list" class="text-[10px] space-y-1 mb-3"></div>
+                    <div class="flex justify-between font-bold text-cyan-400 text-xs"><span>TOTAL:</span><span id="cart-total">$0</span></div>
                 </div>
             </aside>
-
             <div id="tab-tienda" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
         </main>
     </div>
 
     <script>
         lucide.createIcons();
+        let selectedAvatarSeed = 'Felix';
         let allProducts = [];
         let cart = [];
 
-        // --- SISTEMA DE AUTH (LOCALSTORAGE) ---
+        function selectAvatar(el, seed) {
+            document.querySelectorAll('.avatar-opt').forEach(img => img.classList.remove('avatar-selected'));
+            el.classList.add('avatar-selected');
+            selectedAvatarSeed = seed;
+        }
+
         function toggleAuth() {
             document.getElementById('login-box').classList.toggle('hidden');
             document.getElementById('register-box').classList.toggle('hidden');
@@ -98,53 +120,54 @@
 
         function register() {
             const u = document.getElementById('reg-user').value;
+            const e = document.getElementById('reg-mail').value;
             const p = document.getElementById('reg-pass').value;
-            if(!u || !p) return alert("Completa los campos");
-            
-            let users = JSON.parse(localStorage.getItem('fv_users') || '{}');
-            if(users[u]) return alert("El usuario ya existe");
-            
-            users[u] = p;
-            localStorage.setItem('fv_users', JSON.stringify(users));
-            alert("¡Registro exitoso! Ya puedes iniciar sesión.");
+            if(!u || !e || !p) return alert("Completa todos los campos");
+
+            let users = JSON.parse(localStorage.getItem('fv_users_v2') || '[]');
+            if(users.some(user => user.u === u || user.e === e)) return alert("El usuario o correo ya existen");
+
+            users.push({ u, e, p, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedAvatarSeed}` });
+            localStorage.setItem('fv_users_v2', JSON.stringify(users));
+            alert("¡Módulo vinculado! Inicia sesión.");
             toggleAuth();
         }
 
         function login() {
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pass').value;
-            let users = JSON.parse(localStorage.getItem('fv_users') || '{"admin":"123"}');
+            const ident = document.getElementById('login-ident').value;
+            const pass = document.getElementById('login-pass').value;
+            let users = JSON.parse(localStorage.getItem('fv_users_v2') || '[]');
             
-            if(users[u] === p) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('app').classList.remove('hidden');
-                initStore();
-            } else { alert("Credenciales incorrectas"); }
+            // Login por correo o por usuario
+            const user = users.find(u => (u.u === ident || u.e === ident) && u.p === pass);
+
+            if(user) {
+                localStorage.setItem('fv_session', JSON.stringify(user));
+                enterApp(user);
+            } else { alert("Error de acceso"); }
         }
 
-        function logout() { location.reload(); }
+        function enterApp(user) {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            document.getElementById('user-avatar').src = user.avatar;
+            document.getElementById('display-name').innerText = user.u.toUpperCase();
+            document.getElementById('display-mail').innerText = user.e;
+            initStore();
+        }
 
-        // --- TIENDA CON IMÁGENES REALES ---
+        function logout() { localStorage.removeItem('fv_session'); location.reload(); }
+
+        // Mantenemos la lógica de la tienda pero con fotos fijas
         function initStore() {
-            const rawData = [
-                {n: "Gabinete RGB Pro", c: "PC Gamer", p: 2500, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&q=80"},
-                {n: "Sudadera Akatsuki", c: "Ropa Friki", p: 850, img: "https://m.media-amazon.com/images/I/51N-3YpY4HL._AC_UX679_.jpg"},
-                {n: "Elden Ring PS5", c: "Juegos", p: 1200, img: "https://m.media-amazon.com/images/I/81B-87eWj5L._AC_SL1500_.jpg"},
-                {n: "Teclado Mecánico", c: "PC Gamer", p: 1800, img: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400&q=80"},
-                {n: "Hoodie Shinobi", c: "Ropa Friki", p: 650, img: "https://m.media-amazon.com/images/I/61M-FfV7XAL._AC_UX679_.jpg"},
-                {n: "Zelda Switch", c: "Juegos", p: 1100, img: "https://m.media-amazon.com/images/I/81SSTVAtx4L._AC_SL1500_.jpg"}
+            const stock = [
+                {n: "PC Master Race Ultra", c: "PC Gamer", p: 55000, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400"},
+                {n: "Sudadera Neo-Tokyo", c: "Ropa Friki", p: 1200, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400"},
+                {n: "Zelda: Tears of Kingdom", c: "Juegos", p: 1350, img: "https://m.media-amazon.com/images/I/81SSTVAtx4L._AC_SL1500_.jpg"}
             ];
-
-            // Generamos 50 items basados en la data real
             for(let i=0; i<50; i++) {
-                let base = rawData[i % rawData.length];
-                allProducts.push({
-                    id: i,
-                    name: `${base.n} v${i}`,
-                    cat: base.c,
-                    price: base.p + Math.floor(Math.random()*100),
-                    img: base.img
-                });
+                let s = stock[i % stock.length];
+                allProducts.push({ id: i, name: s.n + " #" + i, cat: s.c, price: s.p, img: s.img });
             }
             render(allProducts);
         }
@@ -152,14 +175,14 @@
         function render(data) {
             const container = document.getElementById('tab-tienda');
             container.innerHTML = data.map(p => `
-                <div class="glow-border bg-white/5 rounded-xl overflow-hidden group">
-                    <img src="${p.img}" class="h-44 w-full object-cover">
+                <div class="glow-border bg-white/5 rounded-xl overflow-hidden group animate-fade-in">
+                    <img src="${p.img}" class="h-40 w-full object-cover group-hover:scale-105 transition">
                     <div class="p-4">
                         <span class="text-[9px] text-cyan-400 font-bold uppercase">${p.cat}</span>
                         <h4 class="text-sm font-bold mb-4">${p.name}</h4>
                         <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold">$${p.price} MXN</span>
-                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black p-2 rounded-lg"><i data-lucide="plus" class="w-4"></i></button>
+                            <span class="text-lg font-bold italic">$${p.price.toLocaleString()} MXN</span>
+                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black p-2 rounded-lg"><i data-lucide="shopping-cart" class="w-4"></i></button>
                         </div>
                     </div>
                 </div>
@@ -167,18 +190,21 @@
             lucide.createIcons();
         }
 
-        function filtrarTodo() {
-            const search = document.getElementById('search-bar').value.toLowerCase();
-            const checks = Array.from(document.querySelectorAll('#filter-container input:checked')).map(c => c.value);
-            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(search) && checks.includes(p.cat));
-            render(filtered);
+        function filtrar() {
+            const s = document.getElementById('search-bar').value.toLowerCase();
+            const c = Array.from(document.querySelectorAll('#filter-container input:checked')).map(v => v.value);
+            render(allProducts.filter(p => p.name.toLowerCase().includes(s) && c.includes(p.cat)));
         }
 
         function addToCart(n, p) {
             cart.push({n, p});
             document.getElementById('cart-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.p,0)} MXN`;
+            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.p,0).toLocaleString()} MXN`;
         }
+
+        // Auto-login si ya existe sesión
+        const session = localStorage.getItem('fv_session');
+        if(session) enterApp(JSON.parse(session));
     </script>
 </body>
 </html>
