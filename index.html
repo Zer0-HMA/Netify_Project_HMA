@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-cyan: #00f2ff; --neon-purple: #9d00ff; --neon-green: #10b981; }
+        :root { --neon-cyan: #00f2ff; --neon-purple: #9d00ff; --neon-green: #10b981; --neon-red: #ff003c; }
         body { 
             background-color: #030305; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
             background-image: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
@@ -34,12 +34,17 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
 
-        /* Loader para pago */
         .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--neon-cyan); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Animación para las notificaciones */
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-enter { animation: slideIn 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="overflow-x-hidden">
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[300] flex flex-col gap-3 pointer-events-none"></div>
 
     <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md overflow-y-auto py-10">
         <div class="glass-panel p-8 max-w-md w-full relative overflow-hidden my-auto">
@@ -61,23 +66,11 @@
                 <p class="text-[10px] text-gray-500 mb-4 text-center tracking-[0.4em]">SELECCIONA_AVATAR</p>
                 
                 <div class="grid grid-cols-4 gap-2 mb-6 justify-items-center bg-black/30 p-3 rounded-xl border border-white/5" id="avatar-selector">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="avatar-opt" onclick="selectAvatar(this, 'Felix', 'avataaars')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="avatar-opt avatar-selected" onclick="selectAvatar(this, 'Felix', 'avataaars')">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" class="avatar-opt" onclick="selectAvatar(this, 'Aneka', 'avataaars')">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" class="avatar-opt" onclick="selectAvatar(this, 'Jack', 'avataaars')">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jocelyn" class="avatar-opt" onclick="selectAvatar(this, 'Jocelyn', 'avataaars')">
                     <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Hero" class="avatar-opt" onclick="selectAvatar(this, 'Hero', 'pixel-art')">
-                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Mage" class="avatar-opt" onclick="selectAvatar(this, 'Mage', 'pixel-art')">
-                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Rogue" class="avatar-opt" onclick="selectAvatar(this, 'Rogue', 'pixel-art')">
-                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=King" class="avatar-opt" onclick="selectAvatar(this, 'King', 'pixel-art')">
-                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Destiny" class="avatar-opt" onclick="selectAvatar(this, 'Destiny', 'adventurer')">
-                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Precious" class="avatar-opt" onclick="selectAvatar(this, 'Precious', 'adventurer')">
-                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Shadow" class="avatar-opt" onclick="selectAvatar(this, 'Shadow', 'adventurer')">
-                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Caleb" class="avatar-opt" onclick="selectAvatar(this, 'Caleb', 'adventurer')">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cyborg" class="avatar-opt" onclick="selectAvatar(this, 'Cyborg', 'bottts')">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Mega" class="avatar-opt" onclick="selectAvatar(this, 'Mega', 'bottts')">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Prime" class="avatar-opt" onclick="selectAvatar(this, 'Prime', 'bottts')">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Glitch" class="avatar-opt" onclick="selectAvatar(this, 'Glitch', 'bottts')">
-                </div>
+                    </div>
 
                 <div class="space-y-3">
                     <input type="text" id="reg-user" placeholder="Nombre de Usuario (Único)">
@@ -158,20 +151,27 @@
                     </div>
                     <button onclick="publishProduct()" class="btn-primary w-full mt-6">Publicar en Cuervo-Friki</button>
                 </div>
+                
                 <div id="tab-perfil" class="hidden space-y-6">
                     <div class="glass-panel p-6 flex flex-col md:flex-row items-center gap-6">
                         <img id="dash-avatar" src="" class="w-24 h-24 rounded-full border-4 border-purple-500 bg-white/5">
                         <div class="flex-grow text-center md:text-left">
                             <h2 class="audiowide text-3xl text-white" id="dash-user"></h2>
                             <p class="text-sm text-gray-400 mb-4" id="dash-mail"></p>
-                            <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-xs border border-purple-500/50">Vendedor Verificado</span>
+                            <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-xs border border-purple-500/50">Operador Autorizado</span>
                         </div>
                         <div class="grid grid-cols-2 gap-4 text-center">
-                            <div class="bg-black/40 p-3 rounded-lg border border-white/5"><p class="text-[10px] text-gray-500 uppercase">Ventas</p><p class="text-2xl font-bold text-cyan-400" id="stat-sales">0</p></div>
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/5"><p class="text-[10px] text-gray-500 uppercase">Artículos Vendidos</p><p class="text-2xl font-bold text-cyan-400" id="stat-sales">0</p></div>
                             <div class="bg-black/40 p-3 rounded-lg border border-white/5"><p class="text-[10px] text-gray-500 uppercase">Ganancias</p><p class="text-2xl font-bold text-green-400" id="stat-revenue">$0</p></div>
                         </div>
                     </div>
-                    <h3 class="audiowide text-xl text-cyan-400 mb-4 border-b border-white/10 pb-2">TUS ARTÍCULOS ACTIVOS</h3>
+                    
+                    <h3 class="audiowide text-xl text-green-400 mb-2 border-b border-white/10 pb-2 mt-8 flex items-center gap-2"><i data-lucide="package-check" class="w-5 h-5"></i> TUS ADQUISICIONES</h3>
+                    <p class="text-xs text-gray-400 mb-4">Artículos que ya pagaste y son tuyos.</p>
+                    <div id="dash-purchases" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+
+                    <h3 class="audiowide text-xl text-cyan-400 mb-2 border-b border-white/10 pb-2 flex items-center gap-2"><i data-lucide="store" class="w-5 h-5"></i> LO QUE ESTÁS VENDIENDO</h3>
+                    <p class="text-xs text-gray-400 mb-4">Gestiona tus publicaciones activas.</p>
                     <div id="dash-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
             </div>
@@ -223,7 +223,7 @@
                 <div class="bg-[#25D366]/10 p-4 rounded-xl border border-[#25D366]/30">
                     <i data-lucide="message-circle" class="w-12 h-12 text-[#25D366] mx-auto mb-2"></i>
                     <h3 class="font-bold text-white mb-2">Cerrar trato con el vendedor</h3>
-                    <p class="text-xs text-gray-300 mb-4">Se generará un mensaje automático con tu pedido para coordinar el pago (Transferencia, OXXO, Efectivo) directo con nosotros.</p>
+                    <p class="text-xs text-gray-300 mb-4">Se generará un mensaje automático para coordinar la entrega y el pago (Transferencia, OXXO, Efectivo).</p>
                     <button onclick="pagarPorWhatsApp('5215500000000')" class="w-full bg-[#25D366] hover:bg-[#1ebd5a] text-black font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition">
                         Enviar mensaje de compra
                     </button>
@@ -240,6 +240,30 @@
         let tempUploadImg = '';
         let cart = [];
         
+        // --- SISTEMA DE NOTIFICACIONES (TOASTS) ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let colorClass = 'border-cyan-500 text-cyan-400 bg-cyan-900/30';
+            let icon = 'info';
+            if(type === 'success') { colorClass = 'border-green-500 text-green-400 bg-green-900/30'; icon = 'check-circle'; }
+            if(type === 'error') { colorClass = 'border-red-500 text-red-400 bg-red-900/30'; icon = 'alert-triangle'; }
+
+            toast.className = `flex items-center gap-3 p-4 rounded-lg border backdrop-blur-md shadow-lg toast-enter ${colorClass}`;
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i> <span class="text-sm font-bold">${message}</span>`;
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         // --- BASE DE DATOS LOCAL ---
         function getDB() {
             let db = JSON.parse(localStorage.getItem('cf_marketplace'));
@@ -250,9 +274,9 @@
                     { n: "Chamarra Cyberpunk", c: "Ropa Friki", p: 2500, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400" },
                     { n: "Zelda OLED Console", c: "Juegos", p: 6500, img: "https://images.unsplash.com/photo-1617396900799-f4c926940026?w=400" }
                 ];
-                for(let i=0; i<30; i++) {
+                for(let i=0; i<15; i++) {
                     let d = defaults[i%3];
-                    db.products.push({ id: Date.now()+i, name: `${d.n} v${i}`, cat: d.c, price: d.p + (i*100), img: d.img, owner: 'system', status: 'active' });
+                    db.products.push({ id: Date.now()+i, name: `${d.n} v${i}`, cat: d.c, price: d.p + (i*100), img: d.img, owner: 'system', status: 'active', buyer: null });
                 }
                 localStorage.setItem('cf_marketplace', JSON.stringify(db));
             }
@@ -260,7 +284,7 @@
         }
         function saveDB(db) { localStorage.setItem('cf_marketplace', JSON.stringify(db)); }
 
-        // --- AUTH & AVATARES ---
+        // --- AUTH ---
         function toggleAuth() { document.getElementById('login-box').classList.toggle('hidden'); document.getElementById('register-box').classList.toggle('hidden'); }
         function selectAvatar(el, seed, type) {
             document.querySelectorAll('.avatar-opt').forEach(img => img.classList.remove('avatar-selected'));
@@ -269,18 +293,18 @@
         }
         function register() {
             const u = document.getElementById('reg-user').value.trim(), e = document.getElementById('reg-mail').value.trim(), p = document.getElementById('reg-pass').value;
-            if(!u || !e || !p) return alert("Completa todos los datos");
+            if(!u || !e || !p) return showToast("Completa todos los datos de registro", "error");
             let db = getDB();
-            if(db.users.find(user => user.u === u || user.e === e)) return alert("Usuario o correo ya registrado");
+            if(db.users.find(user => user.u === u || user.e === e)) return showToast("El usuario o correo ya está en uso", "error");
             db.users.push({ u, e, p, avatar: selectedAvatarUrl, sales: 0, revenue: 0 });
-            saveDB(db); alert("Operador Registrado. Inicia Sesión."); toggleAuth();
+            saveDB(db); showToast("¡Operador Registrado! Inicia Sesión.", "success"); toggleAuth();
         }
         function login() {
             const ident = document.getElementById('login-ident').value.trim(), pass = document.getElementById('login-pass').value;
             let db = getDB();
             const user = db.users.find(u => (u.u === ident || u.e === ident) && u.p === pass);
-            if(user) { currentSession = user; localStorage.setItem('cf_session', JSON.stringify(user)); startApp(); } 
-            else { alert("Acceso Denegado. Revisa tus credenciales."); }
+            if(user) { currentSession = user; localStorage.setItem('cf_session', JSON.stringify(user)); startApp(); showToast(`Bienvenido de vuelta, ${user.u}`, "success"); } 
+            else { showToast("Acceso Denegado. Credenciales incorrectas.", "error"); }
         }
         function logout() { localStorage.removeItem('cf_session'); location.reload(); }
 
@@ -299,33 +323,48 @@
             if(tab === 'perfil') updateProfileDashboard();
         }
 
-        function render(products, containerId = 'tab-tienda', showBuyBtn = true) {
+        function render(products, containerId = 'tab-tienda', context = 'store') {
             const container = document.getElementById(containerId);
-            if(products.length === 0) return container.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">Vacío.</p>`;
-            container.innerHTML = products.map(p => `
+            if(products.length === 0) return container.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10 border border-dashed border-gray-700 rounded-xl bg-black/20">No hay artículos aquí aún.</p>`;
+            
+            container.innerHTML = products.map(p => {
+                let actionBtn = '';
+                let badge = '';
+
+                if (context === 'store') {
+                    actionBtn = `<button onclick="addToCart(${p.id})" class="bg-white text-black p-2 rounded-lg hover:bg-cyan-400 transition shadow-[0_0_10px_rgba(255,255,255,0.2)]" title="Agregar al Carrito"><i data-lucide="shopping-cart" class="w-5 h-5"></i></button>`;
+                } else if (context === 'profile-active') {
+                    badge = `<div class="absolute top-2 left-2 bg-purple-600 text-white text-[9px] font-bold px-2 py-1 rounded-full z-10 shadow-lg">EN VENTA</div>`;
+                    actionBtn = `<button onclick="deleteProduct(${p.id})" class="bg-red-500/20 text-red-400 border border-red-500 p-2 rounded-lg hover:bg-red-500 hover:text-white transition" title="Eliminar Publicación"><i data-lucide="trash-2" class="w-5 h-5"></i></button>`;
+                } else if (context === 'profile-history') {
+                    badge = `<div class="absolute top-2 left-2 bg-green-500 text-black text-[9px] font-bold px-2 py-1 rounded-full z-10 shadow-[0_0_10px_rgba(16,185,129,0.5)]">PAGADO</div>`;
+                    actionBtn = `<button class="bg-green-500/20 text-green-400 border border-green-500 p-2 rounded-lg cursor-default"><i data-lucide="check" class="w-5 h-5"></i></button>`;
+                }
+
+                return `
                 <div class="glass-panel overflow-hidden glow-hover relative flex flex-col h-full">
-                    ${!showBuyBtn ? `<div class="absolute top-2 right-2 bg-purple-600 text-white text-[9px] px-2 py-1 rounded-full z-10">TUYO</div>` : ''}
-                    <div class="h-48 overflow-hidden"><img src="${p.img}" class="w-full h-full object-cover hover:scale-110 transition duration-500"></div>
-                    <div class="p-5 flex flex-col flex-grow">
+                    ${badge}
+                    <div class="h-48 overflow-hidden"><img src="${p.img}" class="w-full h-full object-cover hover:scale-110 transition duration-500 opacity-90"></div>
+                    <div class="p-5 flex flex-col flex-grow bg-gradient-to-t from-black/80 to-transparent">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] text-cyan-400 border border-cyan-400/30 px-2 py-0.5 rounded uppercase tracking-wider">${p.cat}</span>
-                            <span class="text-[9px] text-gray-500"><i data-lucide="user" class="w-3 inline"></i> ${p.owner}</span>
+                            <span class="text-[10px] text-cyan-400 border border-cyan-400/30 px-2 py-0.5 rounded uppercase tracking-wider bg-black/50">${p.cat}</span>
+                            <span class="text-[9px] text-gray-400 bg-black/50 px-2 py-0.5 rounded-full"><i data-lucide="user" class="w-3 inline"></i> ${p.owner}</span>
                         </div>
                         <h4 class="text-lg font-bold mb-4 flex-grow text-gray-100">${p.name}</h4>
                         <div class="flex justify-between items-center mt-auto pt-4 border-t border-white/5">
                             <span class="text-xl font-black text-white">$${p.price.toLocaleString()}</span>
-                            ${showBuyBtn ? `<button onclick="addToCart(${p.id})" class="bg-white text-black p-2 rounded-lg hover:bg-cyan-400 transition shadow-[0_0_10px_rgba(255,255,255,0.2)]"><i data-lucide="shopping-cart" class="w-5 h-5"></i></button>` : ''}
+                            ${actionBtn}
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
 
         function filtrar() {
             const s = document.getElementById('search-bar').value.toLowerCase();
             const checks = Array.from(document.querySelectorAll('#filter-container input:checked')).map(v => v.value);
-            render(getDB().products.filter(p => p.status === 'active' && p.name.toLowerCase().includes(s) && checks.includes(p.cat)));
+            render(getDB().products.filter(p => p.status === 'active' && p.name.toLowerCase().includes(s) && checks.includes(p.cat)), 'tab-tienda', 'store');
         }
 
         function previewUpload(input) {
@@ -338,32 +377,49 @@
 
         function publishProduct() {
             const n = document.getElementById('new-name').value, p = document.getElementById('new-price').value, c = document.getElementById('new-cat').value;
-            if(!n || !p || !tempUploadImg) return alert("Faltan datos o la imagen.");
+            if(!n || !p || !tempUploadImg) return showToast("Faltan datos o subir la foto del artículo.", "error");
             let db = getDB();
-            db.products.unshift({ id: Date.now(), name: n, price: Number(p), cat: c, img: tempUploadImg, owner: currentSession.u, status: 'active' });
-            saveDB(db); alert("¡Artículo publicado!");
+            db.products.unshift({ id: Date.now(), name: n, price: Number(p), cat: c, img: tempUploadImg, owner: currentSession.u, status: 'active', buyer: null });
+            saveDB(db); showToast("¡Artículo publicado y en el mercado!", "success");
             document.getElementById('new-name').value = ''; document.getElementById('new-price').value = ''; document.getElementById('upload-preview').classList.add('hidden'); tempUploadImg = '';
             switchTab('tienda'); filtrar();
+        }
+
+        function deleteProduct(id) {
+            if(confirm("¿Seguro que quieres borrar este artículo? No podrás recuperarlo.")) {
+                let db = getDB();
+                db.products = db.products.filter(p => p.id !== id);
+                saveDB(db);
+                showToast("Artículo eliminado de la tienda.", "info");
+                updateProfileDashboard();
+                filtrar();
+            }
         }
 
         // --- CARRITO ---
         function addToCart(id) {
             const product = getDB().products.find(p => p.id === id);
-            if(product.owner === currentSession.u) return alert("No puedes comprar tu propio artículo.");
+            if(product.owner === currentSession.u) return showToast("No puedes comprar tu propio artículo, wey.", "error");
+            if(cart.find(i => i.id === id)) return showToast("Ya lo tienes en el carrito.", "info");
+            
             cart.push(product); updateCartUI();
+            showToast("Añadido al carrito", "success");
         }
         function updateCartUI() {
             document.getElementById('cart-list').innerHTML = cart.map((i, index) => `
-                <div class="flex justify-between items-center group">
-                    <span class="truncate w-32">${i.name}</span>
-                    <div class="flex items-center gap-2"><span class="text-cyan-400">$${i.price}</span><i data-lucide="trash-2" class="w-3 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100" onclick="removeFromCart(${index})"></i></div>
+                <div class="flex justify-between items-center group bg-white/5 p-2 rounded mb-1 border border-white/5">
+                    <span class="truncate w-32 font-medium">${i.name}</span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-cyan-400 font-bold">$${i.price}</span>
+                        <i data-lucide="trash-2" class="w-4 text-red-500 cursor-pointer opacity-50 hover:opacity-100 transition" onclick="removeFromCart(${index})"></i>
+                    </div>
                 </div>`).join('');
             document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.price,0).toLocaleString()} MXN`;
             lucide.createIcons();
         }
         function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
         function openCheckout() {
-            if(cart.length === 0) return alert("Tu carrito está vacío.");
+            if(cart.length === 0) return showToast("Tu carrito está vacío. ¡Ve a comprar algo!", "error");
             document.getElementById('checkout-total').innerText = document.getElementById('cart-total').innerText;
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
@@ -382,46 +438,55 @@
 
         function simularPagoBanco() {
             const num = document.getElementById('cc-num').value, exp = document.getElementById('cc-exp').value, cvv = document.getElementById('cc-cvv').value, nom = document.getElementById('cc-name').value;
-            if(num.length < 19 || exp.length < 5 || cvv.length < 3 || !nom) return alert("Por favor, llena correctamente los datos de la tarjeta.");
+            if(num.length < 19 || exp.length < 5 || cvv.length < 3 || !nom) return showToast("Faltan datos de la tarjeta o son incorrectos.", "error");
             
             const btn = document.getElementById('btn-procesar');
             btn.innerHTML = `<span class="loader"></span> Procesando con el banco...`;
             btn.disabled = true;
 
-            // Simular tiempo de validación bancaria (3 segundos)
             setTimeout(() => {
                 btn.innerHTML = `<i data-lucide="check-circle" class="w-5"></i> ¡Pago Aprobado!`;
                 btn.classList.replace('bg-blue-600', 'bg-green-500');
                 
                 setTimeout(() => { procesarVentaFinal('Tarjeta'); }, 1000);
-            }, 2500);
+            }, 2000);
         }
 
-        // --- OPCIÓN WHATSAPP (REAL) ---
         function pagarPorWhatsApp(numeroTelefono) {
             let lista = cart.map(item => `- ${item.name} ($${item.price})`).join('%0A');
             let total = document.getElementById('cart-total').innerText;
-            let mensaje = `¡Hola *Cuervo-Friki*! 🐦‍⬛%0AQuiero realizar el pago de los siguientes artículos:%0A%0A${lista}%0A%0A*Total: ${total}*%0A%0A¿Me proporcionas los datos para transferencia/depósito por favor?`;
+            let mensaje = `¡Hola *Cuervo-Friki*! 🐦‍⬛%0AQuiero realizar la compra de los siguientes artículos:%0A%0A${lista}%0A%0A*Total a pagar: ${total}*%0A%0A¿Me proporcionas los datos para transferencia/depósito por favor? Mi usuario es: ${currentSession.u}`;
             
             window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
-            procesarVentaFinal('WhatsApp'); // Limpia el carrito después de mandar el mensaje
+            procesarVentaFinal('WhatsApp');
         }
 
         function procesarVentaFinal(metodo) {
             let db = getDB();
             cart.forEach(cartItem => {
                 let prodIndex = db.products.findIndex(p => p.id === cartItem.id);
-                if(prodIndex > -1) db.products[prodIndex].status = 'sold';
+                if(prodIndex > -1) {
+                    db.products[prodIndex].status = 'sold';
+                    db.products[prodIndex].buyer = currentSession.u; // ¡AQUÍ GUARDAMOS AL COMPRADOR!
+                }
                 let sellerIndex = db.users.findIndex(u => u.u === cartItem.owner);
                 if(sellerIndex > -1) { db.users[sellerIndex].sales += 1; db.users[sellerIndex].revenue += cartItem.price; }
             });
             saveDB(db); 
-            if(metodo === 'Tarjeta') alert(`¡Recibo de Compra Cuervo-Friki!\nTransacción exitosa a la tarjeta terminación ${document.getElementById('cc-num').value.slice(-4)}`);
-            cart = []; updateCartUI(); closeCheckout(); filtrar();
             
-            // Resetear botón de pago
+            if(metodo === 'Tarjeta') {
+                showToast(`Pago exitoso a la tarjeta terminación ${document.getElementById('cc-num').value.slice(-4)}`, "success");
+            } else {
+                showToast("Redirigiendo a WhatsApp para cerrar el trato...", "success");
+            }
+
+            cart = []; updateCartUI(); closeCheckout(); filtrar();
+            if(!document.getElementById('tab-perfil').classList.contains('hidden')) updateProfileDashboard();
+            
+            // Resetear UI del botón
             const btn = document.getElementById('btn-procesar');
             btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4"></i> Pagar Seguro`; btn.classList.replace('bg-green-500', 'bg-blue-600');
+            document.getElementById('cc-num').value = ''; document.getElementById('cc-exp').value = ''; document.getElementById('cc-cvv').value = ''; document.getElementById('cc-name').value = '';
         }
 
         function updateProfileDashboard() {
@@ -431,7 +496,14 @@
             document.getElementById('dash-mail').innerText = freshUser.e;
             document.getElementById('stat-sales').innerText = freshUser.sales || 0;
             document.getElementById('stat-revenue').innerText = `$${(freshUser.revenue || 0).toLocaleString()}`;
-            render(getDB().products.filter(p => p.owner === freshUser.u && p.status === 'active'), 'dash-products', false);
+            
+            // Renderizar publicaciones activas (Lo que el usuario vende)
+            const activas = getDB().products.filter(p => p.owner === freshUser.u && p.status === 'active');
+            render(activas, 'dash-products', 'profile-active');
+
+            // Renderizar el historial de compras (Lo que el usuario ha pagado)
+            const compras = getDB().products.filter(p => p.buyer === freshUser.u && p.status === 'sold');
+            render(compras, 'dash-purchases', 'profile-history');
         }
 
         // --- INIT ---
