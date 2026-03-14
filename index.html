@@ -3,186 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRIKI-VAULT ELITE | Avatar System</title>
+    <title>FRIKI-VAULT OMEGA | Cyber Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-cyan: #00f2ff; --neon-purple: #9d00ff; }
+        :root { --neon-cyan: #00f2ff; --neon-purple: #9d00ff; --neon-green: #10b981; }
         body { 
-            background: #050505; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
-            background-image: radial-gradient(circle at top, #1a1a2e 0%, #050505 100%);
-            background-attachment: fixed;
+            background-color: #030305; color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
+            background-image: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px; background-attachment: fixed;
         }
         .audiowide { font-family: 'Audiowide', cursive; }
-        .glow-border { border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
-        .glow-border:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+        
+        /* Efectos Glassmorphism y Neón */
+        .glass-panel { background: rgba(10, 10, 15, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; }
+        .glow-hover { transition: 0.3s; }
+        .glow-hover:hover { border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); transform: translateY(-3px); }
+        
         .hidden { display: none !important; }
-        input, select { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; color: white; outline: none; border-radius: 8px; width: 100%; }
-        .btn-primary { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.3s; }
-        .btn-primary:hover { filter: brightness(1.2); transform: translateY(-2px); }
-        .avatar-opt { cursor: pointer; border: 2px solid transparent; border-radius: 50%; transition: 0.3s; }
-        .avatar-selected { border-color: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); transform: scale(1.1); }
+        input, select { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 12px; color: white; outline: none; border-radius: 8px; width: 100%; transition: 0.3s; }
+        input:focus { border-color: var(--neon-purple); }
+        
+        .btn-primary { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: white; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary:hover { filter: brightness(1.3); box-shadow: 0 0 15px var(--neon-purple); }
+        
+        .avatar-opt { cursor: pointer; border: 2px solid transparent; border-radius: 50%; transition: 0.3s; width: 50px; height: 50px; background: rgba(255,255,255,0.05); }
+        .avatar-selected { border-color: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); transform: scale(1.15); }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-    <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95">
-        <div class="p-8 glow-border bg-[#0a0a0f] max-w-md w-full rounded-2xl animate-fade-in">
+    <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md">
+        <div class="glass-panel p-8 max-w-md w-full relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-cyan-400"></div>
             
             <div id="login-box">
-                <h1 class="audiowide text-3xl mb-1 text-center">SYSTEM <span class="text-cyan-400">ACCESS</span></h1>
-                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">ENTER_MAIL_OR_USERID</p>
+                <h1 class="audiowide text-4xl mb-1 text-center">FRIKI-<span class="text-cyan-400">VAULT</span></h1>
+                <p class="text-[10px] text-gray-500 mb-8 text-center tracking-[0.4em]">SYSTEM_LOGIN</p>
                 <div class="space-y-4">
-                    <input type="text" id="login-ident" placeholder="CORREO O USUARIO">
-                    <input type="password" id="login-pass" placeholder="ACCESS_KEY">
-                    <button onclick="login()" class="btn-primary w-full uppercase">Boot Sequence</button>
-                    <p class="text-center text-xs mt-4">¿Nuevo operador? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:underline">Registrar Módulo</a></p>
+                    <input type="text" id="login-ident" placeholder="Usuario o Correo">
+                    <input type="password" id="login-pass" placeholder="Contraseña">
+                    <button onclick="login()" class="btn-primary w-full">Iniciar Conexión</button>
+                    <p class="text-center text-xs mt-4">¿No tienes cuenta? <a href="#" onclick="toggleAuth()" class="text-cyan-400 hover:text-white transition">Registrar Módulo</a></p>
                 </div>
             </div>
 
             <div id="register-box" class="hidden">
-                <h1 class="audiowide text-2xl mb-1 text-center">CREATE <span class="text-purple-500">PROFILE</span></h1>
-                <p class="text-[10px] text-gray-500 mb-6 text-center tracking-[0.4em]">CHOOSE_YOUR_AVATAR</p>
+                <h1 class="audiowide text-2xl mb-1 text-center">NUEVO <span class="text-purple-500">OPERADOR</span></h1>
+                <p class="text-[10px] text-gray-500 mb-4 text-center tracking-[0.4em]">SELECCIONA_AVATAR</p>
                 
-                <div class="flex justify-center gap-4 mb-6" id="avatar-selector">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Felix')">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Aneka')">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Spooky" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Spooky')">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" class="avatar-opt w-12 h-12 bg-white/10" onclick="selectAvatar(this, 'Jack')">
+                <div class="grid grid-cols-4 gap-3 mb-6 justify-items-center" id="avatar-selector">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="avatar-opt" onclick="selectAvatar(this, 'Felix')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" class="avatar-opt" onclick="selectAvatar(this, 'Aneka')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Spooky" class="avatar-opt" onclick="selectAvatar(this, 'Spooky')">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" class="avatar-opt" onclick="selectAvatar(this, 'Jack')">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cyborg" class="avatar-opt" onclick="selectAvatar(this, 'Cyborg', 'bottts')">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Mega" class="avatar-opt" onclick="selectAvatar(this, 'Mega', 'bottts')">
+                    <img src="https://api.dicebear.com/7.x/micah/svg?seed=Alex" class="avatar-opt" onclick="selectAvatar(this, 'Alex', 'micah')">
+                    <img src="https://api.dicebear.com/7.x/micah/svg?seed=Sara" class="avatar-opt" onclick="selectAvatar(this, 'Sara', 'micah')">
                 </div>
 
                 <div class="space-y-3">
-                    <input type="text" id="reg-user" placeholder="NOMBRE DE USUARIO">
-                    <input type="email" id="reg-mail" placeholder="CORREO ELECTRÓNICO">
-                    <input type="password" id="reg-pass" placeholder="PASSWORD_KEY">
-                    <button onclick="register()" class="btn-primary w-full uppercase">Link Profile</button>
-                    <p class="text-center text-xs mt-3"><a href="#" onclick="toggleAuth()" class="text-gray-500 hover:text-white">Regresar</a></p>
+                    <input type="text" id="reg-user" placeholder="Nombre de Usuario (Único)">
+                    <input type="email" id="reg-mail" placeholder="Correo Electrónico">
+                    <input type="password" id="reg-pass" placeholder="Contraseña Segura">
+                    <button onclick="register()" class="btn-primary w-full">Crear Cuenta</button>
+                    <p class="text-center text-xs mt-3"><a href="#" onclick="toggleAuth()" class="text-gray-500 hover:text-white transition">Volver al Login</a></p>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="app" class="hidden min-h-screen flex flex-col">
-        <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10 p-4">
-            <div class="container mx-auto flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <img id="user-avatar" src="" class="w-10 h-10 rounded-full border border-cyan-400">
-                    <div>
-                        <p class="audiowide text-xs text-cyan-400" id="display-name"></p>
-                        <p class="text-[9px] text-gray-500" id="display-mail"></p>
-                    </div>
+        <header class="glass-panel sticky top-0 z-50 rounded-none border-t-0 border-l-0 border-r-0 border-b border-white/10 px-6 py-3">
+            <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
+                <div class="audiowide text-2xl text-cyan-400 cursor-pointer" onclick="switchTab('tienda')">FV-OMEGA</div>
+                
+                <div class="relative flex-grow max-w-md hidden md:block">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
+                    <input type="text" id="search-bar" onkeyup="filtrar()" placeholder="Buscar en el marketplace..." class="pl-10 py-2 rounded-full text-sm">
                 </div>
-                <div class="relative flex-grow max-w-xs mx-4">
-                    <i data-lucide="search" class="absolute left-3 top-2 text-gray-500 w-4 h-4"></i>
-                    <input type="text" id="search-bar" onkeyup="filtrar()" placeholder="Buscar..." class="pl-9 py-1 text-xs">
-                </div>
-                <button onclick="logout()" class="text-red-500"><i data-lucide="power"></i></button>
+
+                <nav class="flex gap-6 items-center">
+                    <button onclick="switchTab('tienda')" class="text-xs font-bold hover:text-cyan-400 transition">MARKET</button>
+                    <button onclick="switchTab('vender')" class="text-xs font-bold hover:text-cyan-400 transition">VENDER</button>
+                    <button onclick="switchTab('perfil')" class="flex items-center gap-2 hover:opacity-80 transition">
+                        <img id="nav-avatar" src="" class="w-8 h-8 rounded-full border border-purple-500">
+                        <span id="nav-user" class="audiowide text-xs text-purple-400 hidden sm:block"></span>
+                    </button>
+                    <button onclick="logout()" class="text-red-500 hover:text-red-400"><i data-lucide="power" class="w-5"></i></button>
+                </nav>
             </div>
         </header>
 
-        <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <aside class="space-y-4">
-                <div class="p-4 glow-border bg-white/5 rounded-xl">
-                    <h3 class="audiowide text-[10px] mb-3 text-cyan-400">FILTROS</h3>
-                    <div class="space-y-2 text-xs" id="filter-container">
-                        <label class="flex items-center gap-2"><input type="checkbox" value="PC Gamer" checked onchange="filtrar()" class="accent-cyan-400"> Hardware</label>
-                        <label class="flex items-center gap-2"><input type="checkbox" value="Ropa Friki" checked onchange="filtrar()" class="accent-cyan-400"> Ropa Geek</label>
-                        <label class="flex items-center gap-2"><input type="checkbox" value="Juegos" checked onchange="filtrar()" class="accent-cyan-400"> Juegos</label>
+        <main class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8 flex-grow">
+            
+            <aside class="space-y-6" id="sidebar">
+                <div class="glass-panel p-5 glow-hover">
+                    <h3 class="audiowide text-xs mb-4 text-cyan-400 flex items-center gap-2"><i data-lucide="filter" class="w-4"></i> FILTROS</h3>
+                    <div class="space-y-3 text-sm text-gray-300" id="filter-container">
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition"><input type="checkbox" value="PC Gamer" checked onchange="filtrar()" class="accent-cyan-400 w-4 h-4"> Hardware & PC</label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition"><input type="checkbox" value="Ropa Friki" checked onchange="filtrar()" class="accent-cyan-400 w-4 h-4"> Ropa Geek</label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition"><input type="checkbox" value="Juegos" checked onchange="filtrar()" class="accent-cyan-400 w-4 h-4"> Videojuegos</label>
                     </div>
                 </div>
-                <div class="p-4 glow-border bg-cyan-900/10 rounded-xl">
-                    <h3 class="audiowide text-[10px] mb-2">CARRITO DE RED</h3>
-                    <div id="cart-list" class="text-[10px] space-y-1 mb-3"></div>
-                    <div class="flex justify-between font-bold text-cyan-400 text-xs"><span>TOTAL:</span><span id="cart-total">$0</span></div>
+
+                <div class="glass-panel p-5 glow-hover border-cyan-900/30">
+                    <h3 class="audiowide text-xs mb-3 flex items-center gap-2"><i data-lucide="shopping-cart" class="w-4"></i> CARRITO</h3>
+                    <div id="cart-list" class="text-xs space-y-2 mb-4 max-h-48 overflow-y-auto pr-2 text-gray-400"></div>
+                    <div class="flex justify-between font-bold text-cyan-400 text-sm border-t border-white/10 pt-3 mb-4">
+                        <span>TOTAL:</span><span id="cart-total">$0 MXN</span>
+                    </div>
+                    <button onclick="openCheckout()" class="w-full bg-cyan-500 text-black py-2 rounded font-bold text-xs uppercase hover:bg-cyan-400 transition">Pagar Ahora</button>
                 </div>
             </aside>
-            <div id="tab-tienda" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+
+            <div class="lg:col-span-3 relative">
+                
+                <div id="tab-tienda" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+
+                <div id="tab-vender" class="hidden glass-panel p-8 max-w-2xl mx-auto glow-hover">
+                    <h2 class="audiowide text-2xl mb-6 text-cyan-400 text-center flex items-center justify-center gap-2"><i data-lucide="upload-cloud"></i> PUBLICAR ARTÍCULO</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <input type="text" id="new-name" placeholder="Título del Producto">
+                            <input type="number" id="new-price" placeholder="Precio ($ MXN)">
+                            <select id="new-cat">
+                                <option value="PC Gamer">PC Gamer / Hardware</option>
+                                <option value="Ropa Friki">Ropa Friki / Cosplay</option>
+                                <option value="Juegos">Videojuegos / Consolas</option>
+                            </select>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="border-2 border-dashed border-gray-600 rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer hover:border-cyan-400 transition text-gray-400 hover:text-cyan-400" onclick="document.getElementById('new-file').click()">
+                                <i data-lucide="image-plus" class="w-8 h-8 mb-2"></i>
+                                <span class="text-xs text-center px-4">Clic para subir foto desde tu PC</span>
+                                <input type="file" id="new-file" class="hidden" accept="image/*" onchange="previewUpload(this)">
+                            </div>
+                            <img id="upload-preview" src="" class="hidden w-full h-24 object-cover rounded-lg border border-cyan-500">
+                        </div>
+                    </div>
+                    <button onclick="publishProduct()" class="btn-primary w-full mt-6">Publicar en el Mercado</button>
+                </div>
+
+                <div id="tab-perfil" class="hidden space-y-6">
+                    <div class="glass-panel p-6 flex flex-col md:flex-row items-center gap-6">
+                        <img id="dash-avatar" src="" class="w-24 h-24 rounded-full border-4 border-purple-500 shadow-[0_0_20px_rgba(157,0,255,0.4)]">
+                        <div class="flex-grow text-center md:text-left">
+                            <h2 class="audiowide text-3xl text-white" id="dash-user"></h2>
+                            <p class="text-sm text-gray-400 mb-4" id="dash-mail"></p>
+                            <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-xs border border-purple-500/50">Vendedor Verificado</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-center w-full md:w-auto mt-4 md:mt-0">
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/5">
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Ventas Exitosas</p>
+                                <p class="text-2xl font-bold text-cyan-400" id="stat-sales">0</p>
+                            </div>
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/5">
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Ganancias Netas</p>
+                                <p class="text-2xl font-bold text-green-400" id="stat-revenue">$0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="audiowide text-xl text-cyan-400 mb-4 border-b border-white/10 pb-2">TUS ARTÍCULOS ACTIVOS</h3>
+                    <div id="dash-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+            </div>
         </main>
+    </div>
+
+    <div id="checkout-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div class="glass-panel p-8 max-w-sm w-full relative">
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x"></i></button>
+            <h2 class="audiowide text-xl mb-6 text-center text-cyan-400">PASARELA DE PAGO</h2>
+            <p class="text-center text-sm text-gray-300 mb-2">Total a pagar:</p>
+            <p class="text-center text-3xl font-bold text-white mb-6" id="checkout-total">$0 MXN</p>
+            
+            <div class="space-y-3">
+                <button onclick="processPayment('Tarjeta')" class="w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-lg transition">
+                    <span class="flex items-center gap-3"><i data-lucide="credit-card" class="text-blue-400"></i> Tarjeta Crédito/Débito</span> <i data-lucide="chevron-right" class="w-4 text-gray-500"></i>
+                </button>
+                <button onclick="processPayment('PayPal')" class="w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-lg transition">
+                    <span class="flex items-center gap-3"><i data-lucide="wallet" class="text-blue-500"></i> PayPal</span> <i data-lucide="chevron-right" class="w-4 text-gray-500"></i>
+                </button>
+                <button onclick="processPayment('Crypto')" class="w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-lg transition">
+                    <span class="flex items-center gap-3"><i data-lucide="bitcoin" class="text-yellow-400"></i> Criptomonedas</span> <i data-lucide="chevron-right" class="w-4 text-gray-500"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
         lucide.createIcons();
-        let selectedAvatarSeed = 'Felix';
-        let allProducts = [];
+        let currentSession = null;
+        let selectedAvatarUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix';
+        let tempUploadImg = '';
         let cart = [];
-
-        function selectAvatar(el, seed) {
-            document.querySelectorAll('.avatar-opt').forEach(img => img.classList.remove('avatar-selected'));
-            el.classList.add('avatar-selected');
-            selectedAvatarSeed = seed;
+        
+        // --- BASE DE DATOS LOCAL ---
+        function getDB() {
+            let db = JSON.parse(localStorage.getItem('fv_marketplace'));
+            if(!db) {
+                // Generar mercado inicial si está vacío
+                db = { users: [], products: [] };
+                const defaults = [
+                    { n: "RTX 4090 OC", c: "PC Gamer", p: 45000, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400" },
+                    { n: "Chamarra Cyberpunk", c: "Ropa Friki", p: 2500, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400" },
+                    { n: "Nintendo Switch OLED", c: "Juegos", p: 6500, img: "https://images.unsplash.com/photo-1617396900799-f4c926940026?w=400" }
+                ];
+                for(let i=0; i<30; i++) {
+                    let d = defaults[i%3];
+                    db.products.push({ id: Date.now()+i, name: `${d.n} v${i}`, cat: d.c, price: d.p + (i*100), img: d.img, owner: 'system', status: 'active' });
+                }
+                localStorage.setItem('fv_marketplace', JSON.stringify(db));
+            }
+            return db;
         }
+        function saveDB(db) { localStorage.setItem('fv_marketplace', JSON.stringify(db)); }
 
+        // --- AUTH ---
         function toggleAuth() {
             document.getElementById('login-box').classList.toggle('hidden');
             document.getElementById('register-box').classList.toggle('hidden');
         }
 
+        function selectAvatar(el, seed, type = 'avataaars') {
+            document.querySelectorAll('.avatar-opt').forEach(img => img.classList.remove('avatar-selected'));
+            el.classList.add('avatar-selected');
+            selectedAvatarUrl = `https://api.dicebear.com/7.x/${type}/svg?seed=${seed}`;
+        }
+
         function register() {
-            const u = document.getElementById('reg-user').value;
-            const e = document.getElementById('reg-mail').value;
+            const u = document.getElementById('reg-user').value.trim();
+            const e = document.getElementById('reg-mail').value.trim();
             const p = document.getElementById('reg-pass').value;
-            if(!u || !e || !p) return alert("Completa todos los campos");
+            if(!u || !e || !p) return alert("Completa todos los datos");
 
-            let users = JSON.parse(localStorage.getItem('fv_users_v2') || '[]');
-            if(users.some(user => user.u === u || user.e === e)) return alert("El usuario o correo ya existen");
+            let db = getDB();
+            if(db.users.find(user => user.u === u || user.e === e)) return alert("Usuario o correo ya registrado");
 
-            users.push({ u, e, p, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedAvatarSeed}` });
-            localStorage.setItem('fv_users_v2', JSON.stringify(users));
-            alert("¡Módulo vinculado! Inicia sesión.");
+            db.users.push({ u, e, p, avatar: selectedAvatarUrl, sales: 0, revenue: 0 });
+            saveDB(db);
+            alert("Operador Registrado. Inicia Sesión.");
             toggleAuth();
         }
 
         function login() {
-            const ident = document.getElementById('login-ident').value;
+            const ident = document.getElementById('login-ident').value.trim();
             const pass = document.getElementById('login-pass').value;
-            let users = JSON.parse(localStorage.getItem('fv_users_v2') || '[]');
+            let db = getDB();
             
-            // Login por correo o por usuario
-            const user = users.find(u => (u.u === ident || u.e === ident) && u.p === pass);
-
+            const user = db.users.find(u => (u.u === ident || u.e === ident) && u.p === pass);
             if(user) {
-                localStorage.setItem('fv_session', JSON.stringify(user));
-                enterApp(user);
-            } else { alert("Error de acceso"); }
+                currentSession = user;
+                localStorage.setItem('fv_session_omega', JSON.stringify(user));
+                startApp();
+            } else { alert("Acceso Denegado. Revisa tus credenciales."); }
         }
 
-        function enterApp(user) {
+        function logout() { localStorage.removeItem('fv_session_omega'); location.reload(); }
+
+        // --- CORE APP ---
+        function startApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
-            document.getElementById('user-avatar').src = user.avatar;
-            document.getElementById('display-name').innerText = user.u.toUpperCase();
-            document.getElementById('display-mail').innerText = user.e;
-            initStore();
+            
+            // Header Profile
+            document.getElementById('nav-avatar').src = currentSession.avatar;
+            document.getElementById('nav-user').innerText = currentSession.u.toUpperCase();
+            
+            filtrar(); // Carga productos
+            updateProfileDashboard();
         }
 
-        function logout() { localStorage.removeItem('fv_session'); location.reload(); }
-
-        // Mantenemos la lógica de la tienda pero con fotos fijas
-        function initStore() {
-            const stock = [
-                {n: "PC Master Race Ultra", c: "PC Gamer", p: 55000, img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400"},
-                {n: "Sudadera Neo-Tokyo", c: "Ropa Friki", p: 1200, img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400"},
-                {n: "Zelda: Tears of Kingdom", c: "Juegos", p: 1350, img: "https://m.media-amazon.com/images/I/81SSTVAtx4L._AC_SL1500_.jpg"}
-            ];
-            for(let i=0; i<50; i++) {
-                let s = stock[i % stock.length];
-                allProducts.push({ id: i, name: s.n + " #" + i, cat: s.c, price: s.p, img: s.img });
-            }
-            render(allProducts);
+        function switchTab(tab) {
+            ['tienda', 'vender', 'perfil'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById('sidebar').classList.toggle('hidden', tab === 'perfil'); // Ocultar sidebar en perfil
+            if(tab === 'perfil') updateProfileDashboard();
         }
 
-        function render(data) {
-            const container = document.getElementById('tab-tienda');
-            container.innerHTML = data.map(p => `
-                <div class="glow-border bg-white/5 rounded-xl overflow-hidden group animate-fade-in">
-                    <img src="${p.img}" class="h-40 w-full object-cover group-hover:scale-105 transition">
-                    <div class="p-4">
-                        <span class="text-[9px] text-cyan-400 font-bold uppercase">${p.cat}</span>
-                        <h4 class="text-sm font-bold mb-4">${p.name}</h4>
-                        <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold italic">$${p.price.toLocaleString()} MXN</span>
-                            <button onclick="addToCart('${p.name}', ${p.price})" class="bg-white text-black p-2 rounded-lg"><i data-lucide="shopping-cart" class="w-4"></i></button>
+        // --- MARKETPLACE LOGIC ---
+        function render(products, containerId = 'tab-tienda', showBuyBtn = true) {
+            const container = document.getElementById(containerId);
+            if(products.length === 0) return container.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">No hay artículos aquí.</p>`;
+
+            container.innerHTML = products.map(p => `
+                <div class="glass-panel overflow-hidden glow-hover relative flex flex-col h-full">
+                    ${!showBuyBtn ? `<div class="absolute top-2 right-2 bg-purple-600 text-white text-[9px] px-2 py-1 rounded-full z-10">TUYO</div>` : ''}
+                    <div class="h-48 overflow-hidden"><img src="${p.img}" class="w-full h-full object-cover hover:scale-110 transition duration-500"></div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] text-cyan-400 border border-cyan-400/30 px-2 py-0.5 rounded uppercase tracking-wider">${p.cat}</span>
+                            <span class="text-[9px] text-gray-500"><i data-lucide="user" class="w-3 inline"></i> ${p.owner}</span>
+                        </div>
+                        <h4 class="text-lg font-bold mb-4 flex-grow text-gray-100">${p.name}</h4>
+                        <div class="flex justify-between items-center mt-auto pt-4 border-t border-white/5">
+                            <span class="text-xl font-black text-white">$${p.price.toLocaleString()}</span>
+                            ${showBuyBtn ? `<button onclick="addToCart(${p.id})" class="bg-white text-black p-2 rounded-lg hover:bg-cyan-400 transition"><i data-lucide="shopping-cart" class="w-5 h-5"></i></button>` : ''}
                         </div>
                     </div>
                 </div>
@@ -192,19 +318,130 @@
 
         function filtrar() {
             const s = document.getElementById('search-bar').value.toLowerCase();
-            const c = Array.from(document.querySelectorAll('#filter-container input:checked')).map(v => v.value);
-            render(allProducts.filter(p => p.name.toLowerCase().includes(s) && c.includes(p.cat)));
+            const checks = Array.from(document.querySelectorAll('#filter-container input:checked')).map(v => v.value);
+            const db = getDB();
+            
+            // Solo mostrar artículos activos (no vendidos)
+            let activeStock = db.products.filter(p => p.status === 'active' && p.name.toLowerCase().includes(s) && checks.includes(p.cat));
+            render(activeStock);
         }
 
-        function addToCart(n, p) {
-            cart.push({n, p});
-            document.getElementById('cart-list').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${cart.reduce((a,b)=>a+b.p,0).toLocaleString()} MXN`;
+        // --- VENDER (SUBIR FOTOS DESDE PC) ---
+        function previewUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempUploadImg = e.target.result;
+                    const preview = document.getElementById('upload-preview');
+                    preview.src = tempUploadImg;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        // Auto-login si ya existe sesión
-        const session = localStorage.getItem('fv_session');
-        if(session) enterApp(JSON.parse(session));
+        function publishProduct() {
+            const n = document.getElementById('new-name').value;
+            const p = document.getElementById('new-price').value;
+            const c = document.getElementById('new-cat').value;
+            
+            if(!n || !p || !tempUploadImg) return alert("Faltan datos o la imagen.");
+
+            let db = getDB();
+            db.products.unshift({ id: Date.now(), name: n, price: Number(p), cat: c, img: tempUploadImg, owner: currentSession.u, status: 'active' });
+            saveDB(db);
+            
+            alert("¡Artículo publicado exitosamente!");
+            document.getElementById('new-name').value = ''; document.getElementById('new-price').value = '';
+            document.getElementById('upload-preview').classList.add('hidden'); tempUploadImg = '';
+            
+            switchTab('tienda');
+            filtrar();
+        }
+
+        // --- CARRITO Y PAGOS ---
+        function addToCart(id) {
+            const db = getDB();
+            const product = db.products.find(p => p.id === id);
+            if(product.owner === currentSession.u) return alert("No puedes comprar tu propio artículo carnal.");
+            
+            cart.push(product);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-list').innerHTML = cart.map((i, index) => `
+                <div class="flex justify-between items-center group">
+                    <span class="truncate w-32">${i.name}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-cyan-400">$${i.price}</span>
+                        <i data-lucide="trash-2" class="w-3 text-red-500 cursor-pointer opacity-0 group-hover:opacity-100" onclick="removeFromCart(${index})"></i>
+                    </div>
+                </div>`).join('');
+            const total = cart.reduce((a,b)=>a+b.price,0);
+            document.getElementById('cart-total').innerText = `$${total.toLocaleString()} MXN`;
+            lucide.createIcons();
+        }
+
+        function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
+
+        function openCheckout() {
+            if(cart.length === 0) return alert("Tu carrito está vacío.");
+            document.getElementById('checkout-total').innerText = document.getElementById('cart-total').innerText;
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+        function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
+        function processPayment(method) {
+            let db = getDB();
+            
+            // Procesar cada item del carrito
+            cart.forEach(cartItem => {
+                // 1. Marcar el producto como vendido
+                let prodIndex = db.products.findIndex(p => p.id === cartItem.id);
+                if(prodIndex > -1) db.products[prodIndex].status = 'sold';
+
+                // 2. Darle el dinero al vendedor original
+                let sellerIndex = db.users.findIndex(u => u.u === cartItem.owner);
+                if(sellerIndex > -1) {
+                    db.users[sellerIndex].sales += 1;
+                    db.users[sellerIndex].revenue += cartItem.price;
+                }
+            });
+
+            saveDB(db);
+            alert(`¡Pago exitoso con ${method}! Has comprado ${cart.length} artículos.`);
+            cart = [];
+            updateCartUI();
+            closeCheckout();
+            filtrar(); // Recargar tienda para que desaparezcan los vendidos
+        }
+
+        // --- DASHBOARD (PERFIL) ---
+        function updateProfileDashboard() {
+            let db = getDB();
+            // Actualizar info del usuario desde la DB para tener las ganancias reales
+            let freshUser = db.users.find(u => u.u === currentSession.u);
+            if(!freshUser) freshUser = currentSession; // Por si es el primer login
+            
+            document.getElementById('dash-avatar').src = freshUser.avatar;
+            document.getElementById('dash-user').innerText = freshUser.u.toUpperCase();
+            document.getElementById('dash-mail').innerText = freshUser.e;
+            
+            document.getElementById('stat-sales').innerText = freshUser.sales || 0;
+            document.getElementById('stat-revenue').innerText = `$${(freshUser.revenue || 0).toLocaleString()}`;
+
+            // Mostrar solo los artículos que este usuario está vendiendo y que siguen activos
+            let myProducts = db.products.filter(p => p.owner === freshUser.u && p.status === 'active');
+            render(myProducts, 'dash-products', false); // false = no mostrar botón de comprar
+        }
+
+        // --- INIT ---
+        const savedSession = localStorage.getItem('fv_session_omega');
+        if(savedSession) {
+            currentSession = JSON.parse(savedSession);
+            startApp();
+        }
     </script>
 </body>
 </html>
